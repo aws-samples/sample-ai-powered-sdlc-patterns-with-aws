@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { AmazonQBusinessStack } from '../../../../../infrastructure/cdk/lib/amazon-q-stack';
-import { AmazonQConfluenceSourceStack } from '../../../../../infrastructure/cdk/lib/amazon-q-confluence-stack';
-import { AmazonQJiraPluginStack } from '../../../../../infrastructure/cdk/lib/amazon-q-jira-plugin-stack';
+import { AmazonQBusinessStack } from '../../../../../cdk-common/lib/amazon-q-stack';
+import { AmazonQConfluenceSourceStack } from '../../../../../cdk-common/lib/amazon-q-confluence-stack';
+import { AmazonQJiraPluginStack } from '../../../../../cdk-common/lib/amazon-q-jira-plugin-stack';
 
 const app = new cdk.App();
 

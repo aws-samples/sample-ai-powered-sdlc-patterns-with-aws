@@ -1,12 +1,12 @@
 # Customer Feedback Analysis
 
-## 1. Introduction
+## Introduction
 
 AnyCompanyReads, a company that sells books globally from their physical stores wants to sell books online. The product owner has captured the high-level requirements after discussing with business, UX, visual design and market research teams. Let's see how we can use Generative AI services on AWS to build the online book store - [AnyCompanyReads](https://catalog.workshops.aws/appsync-immersionday/en-US).
 
 In this project we are going to explorer how Project managers can leverage amazon Q Business to analyze customers feedback, to address issues impacting high-revenue customers. Amazon Q processes customer feedback within specified timeframes and classifies entries as positive or negative. The system converts negative feedback into actionable problem statements and groups similar items. For each group, Amazon Q generates immediate and strategic solutions. The final analysis ranks issues by customer revenue impact and implementation effort using T-shirt sizes.
 
-## 2. Solution Architecture
+## Solution Architecture
 
 ![Solution Architecture](images/customer-feedback-analysis-architecture.jpg "Solution Architecture")
 
@@ -15,7 +15,7 @@ In this project we are going to explorer how Project managers can leverage amazo
 3. the identified and pre-elaborated feedback are then open as Jira issue by the project manager with the proper information and t-shirt sizing
 4. Amazon Q Business open a new Jira issue by leveraging the Amazon Q Jira Plugin
 
-## 3. Prerequisites
+## Prerequisites
 
 In this section you will execute the required step to install the solution in your AWS account. To proceed with the installation, you will need:
 - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm): the standard package manager for Node.js.
@@ -101,7 +101,7 @@ __Note:__
 - `<jira-auth-url>`: For Jira Cloud OAuth applications, this is `https://auth.atlassian.com/authorize`.
 - `<jira-access-token-url>`: For Jira Cloud OAuth applications, this is `https://auth.atlassian.com/oauth/token`.
 
-## 4. Deployment instructions
+## Deployment instructions
 
 In this section you will deploy Amazon Q Business and the required environment. We will perform the following steps:
 - Deploy the infrastructure with AWS CDK
@@ -109,13 +109,11 @@ In this section you will deploy Amazon Q Business and the required environment. 
 - Enable the Amazon Q Business Data Sync
 - Create the Amazon Q App
 
-### Deploy the infrastructure with AWS CDK
-
-Run the following command to install the required dependencies in the current [cdk project](./cdk/) and the [cdk library inside the infrastructure](//infrastructure/cdk) folder: 
+Run the following command to install the required dependencies in the current [cdk project](./cdk/) and the [cdk library inside the cdk-common](//cdk-common) folder: 
 
 ```
 npm --prefix cdk install
-npm --prefix ../../../infrastructure/cdk install
+npm --prefix ../../../cdk-common install
 ```
 
 Verify your that your terminal is correctly configured with AWS CLI and verify your current identity by running the following command.
@@ -290,7 +288,7 @@ For each card enter the following details:
 | Prioritised Feedback | Output | Prioritise the **@Aggregate Feedbacks** by considering the top spending accounts and the solution complexity (LOW, MEDIUM, HIGH). Order the feedbacks based on priority and output in a tabular format. | yes |
 
 
-## 5. Test
+## Test
 
 In this section we are going to test the Amazon Q App created for analyzing customers feedback together with some dummy data, including information on: 
 - AnyCompanyReads Features
@@ -316,7 +314,7 @@ Finally Amazon Q combined all the information to prioritize the issue by conside
 
 The project managed can now leverage this analysis to open Jira ticked by leveraging the Amazon Q Business Jira integration.
 
-## 6. Clean up
+## Clean up
 
 Move to the `cdk` folder
 
@@ -335,14 +333,14 @@ Finally, remove the iam role `QBusiness-WebExperience-${APP_NAME}`
 aws iam delete-role --role-name QBusiness-WebExperience-${APP_NAME}
 ```
 
-## 7. Security
+## Security
 
 _See CONTRIBUTING for more information._
 
-## 8. License
+## License
 
 _This library is licensed under the MIT-0 License. See the LICENSE file._
 
-## 9. Disclaimer
+## Disclaimer
 
-_"The solution architecture sample code is provided without any guarantees, and you're not recommended to use it for production-grade workloads. The intention is to provide content to build and learn. Be sure of reading the licensing terms."_
+_The solution architecture sample code is provided without any guarantees, and you're not recommended to use it for production-grade workloads. The intention is to provide content to build and learn. Be sure of reading the licensing terms._

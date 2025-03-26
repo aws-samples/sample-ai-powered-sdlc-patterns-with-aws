@@ -112,11 +112,11 @@ In this section you will deploy Amazon Q Business and the required environment. 
 
 ### Deploy the infrastructure with AWS CDK
 
-Run the following command to install the required dependencies in the current [cdk project](./cdk/) and the [cdk library inside the infrastructure](//infrastructure/cdk) folder: 
+Run the following command to install the required dependencies in the current [cdk project](./cdk/) and the [cdk library inside the cdk-common](//cdk-common) folder: 
 
 ```
 npm --prefix cdk install
-npm --prefix ../../../infrastructure/cdk install
+npm --prefix ../../../cdk-common install
 ```
 
 Verify your that you terminal is correctly configured with AWS CLI and verify your current identity by running the following command.
