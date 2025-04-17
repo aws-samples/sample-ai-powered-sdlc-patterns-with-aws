@@ -95,6 +95,9 @@ export JIRA_ACCESS_TOKEN_URL=<jira-access-token-url>
 ```
 
 __Note:__
+The `<jira-client-id>` and the `<jira-client-secret>` are available in your OAuth 2.0 App after that you configure the the Jira Callback URL. The callback URL will be available after deploying the `AmazonQBusinessStack` stack, in the next steps.
+
+__Note:__
 - `<jira-client-id>`:  the client ID generated when you create the OAuth 2.0 application in Jira Cloud.
 - `<jira-client-secret>`is the client secret generated when you create the OAuth 2.0 application in Jira Cloud.
 - `<jira-redirect-path>` is the URL path to which user needs to be redirected after authentication, for instance `/oauth/callback`.
