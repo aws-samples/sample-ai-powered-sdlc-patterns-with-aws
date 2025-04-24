@@ -1,12 +1,14 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as kms from 'aws-cdk-lib/aws-kms';
 import * as qbusiness from 'aws-cdk-lib/aws-qbusiness';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 interface CustomProps extends cdk.StackProps {
     readonly app: qbusiness.CfnApplication;
     readonly appWebEndpoint: string;
+    readonly encryptionKey: kms.Key;
 }
 
 export class AmazonQJiraPluginStack extends cdk.Stack {
@@ -55,12 +57,12 @@ export class AmazonQJiraPluginStack extends cdk.Stack {
         const jiraRedirectUrl = props.appWebEndpoint + jiraRedirectPathParameter.valueAsString;
 
         const secret = new secretsmanager.Secret(this, `QBusinessJiraSecret`, {
-            secretName: `QBusiness-Jira-${props.app.displayName}`,
             secretObjectValue: {
                 client_id: cdk.SecretValue.unsafePlainText(jiraClientId),
                 client_secret: cdk.SecretValue.unsafePlainText(jiraClientSecret),
                 redirect_uri: cdk.SecretValue.unsafePlainText(jiraRedirectUrl),
             },
+            encryptionKey: props.encryptionKey
         });
 
         // IAM policy and role for the Q Business Confluence Data Source
@@ -75,7 +77,6 @@ export class AmazonQJiraPluginStack extends cdk.Stack {
         });
 
         const jiraRole = new iam.Role(this, 'JiraRole', {
-            roleName: `QBusiness-Jira-Role-${props.app.displayName}`,
             assumedBy: new iam.ServicePrincipal('qbusiness.amazonaws.com', {
                 conditions: {
                     StringEquals: {

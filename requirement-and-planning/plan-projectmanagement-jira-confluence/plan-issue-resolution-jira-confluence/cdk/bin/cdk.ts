@@ -11,11 +11,13 @@ const amazonQBusiness = new AmazonQBusinessStack(app,  'AmazonQBusinessStack', {
 //Require AmazonQBusinessStack
 const AmazonQConfluenceSource = new AmazonQConfluenceSourceStack(app,  'AmazonQConfluenceSourceStack', {
   app: amazonQBusiness.app,
-  index: amazonQBusiness.index
+  index: amazonQBusiness.index,
+  encryptionKey: amazonQBusiness.encryptionKey
 });
 
 //Require AmazonQBusinessStack
 const AmazonQJiraPlugin = new AmazonQJiraPluginStack(app,  'AmazonQJiraPluginStack', {
   app: amazonQBusiness.app,
-  appWebEndpoint: amazonQBusiness.webEndpoint
+  appWebEndpoint: amazonQBusiness.webEndpoint,
+  encryptionKey: amazonQBusiness.encryptionKey
 });

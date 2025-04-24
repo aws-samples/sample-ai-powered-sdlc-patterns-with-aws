@@ -1,0 +1,39 @@
+[
+  {
+    "filename": "cdk.out/AmazonQBusinessStack.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W13",
+          "name": "IamManagedPolicyWildcardResourceRule",
+          "type": "WARN",
+          "message": "IAM managed policy should not allow * resource",
+          "logical_resource_ids": [
+            "QBusinessWebManagedPolicy4CDD940D"
+          ],
+          "line_numbers": [
+            108
+          ],
+          "element_types": [
+            "resource"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "cdk.out/AmazonQConfluenceSourceStack.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": []
+    }
+  },
+  {
+    "filename": "cdk.out/AmazonQJiraPluginStack.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": []
+    }
+  }
+]
