@@ -1,11 +1,13 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as kms from 'aws-cdk-lib/aws-kms';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 export interface CustomProps extends cdk.StackProps {
     readonly index: cdk.aws_qbusiness.CfnIndex;
     readonly app: cdk.aws_qbusiness.CfnApplication;
+    readonly encryptionKey: kms.Key;
 }
 
 export class AmazonQConfluenceSourceStack extends cdk.Stack {
@@ -39,11 +41,11 @@ export class AmazonQConfluenceSourceStack extends cdk.Stack {
         const confluencePassword = confluencePasswordParameter.valueAsString;
 
         const secret = new secretsmanager.Secret(this, `QBusinessConfluenceSecret`, {
-            secretName: `QBusiness-Confluence-${props.app.displayName}`,
             secretObjectValue: {
                 username: cdk.SecretValue.unsafePlainText(confluenceUsername),
                 password: cdk.SecretValue.unsafePlainText(confluencePassword),
             },
+            encryptionKey: props.encryptionKey
         },
         );
 
@@ -104,7 +106,6 @@ export class AmazonQConfluenceSourceStack extends cdk.Stack {
         });
 
         const confluenceRole = new iam.Role(this, 'ConfluenceSourceRole', {
-            roleName: `QBusiness-Confluence-Role-${props.app.displayName}`,
             assumedBy: new iam.ServicePrincipal('qbusiness.amazonaws.com', {
                 conditions: {
                     StringEquals: {

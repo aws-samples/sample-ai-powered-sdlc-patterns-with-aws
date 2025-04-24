@@ -1,5 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as kms from 'aws-cdk-lib/aws-kms';
 import * as qbusiness from 'aws-cdk-lib/aws-qbusiness';
 import { Construct } from "constructs";
 
@@ -7,6 +8,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
     public app: qbusiness.CfnApplication;
     public index: qbusiness.CfnIndex;
     public webEndpoint: string;
+    public encryptionKey: kms.Key;
 
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
@@ -15,6 +17,10 @@ export class AmazonQBusinessStack extends cdk.Stack {
         const region = cdk.Stack.of(this).region
 
         cdk.Stack.of(this).templateOptions.description = 'Amazon Q Business Base Stack';
+
+        const encryptionKey = new kms.Key(this, "EncryptionKey",{
+            enableKeyRotation: true
+        })
 
         const AppNameParameter = new cdk.CfnParameter(this, 'appName', {
             type: 'String',
@@ -48,7 +54,6 @@ export class AmazonQBusinessStack extends cdk.Stack {
 
         
         const web_role_policy = new iam.ManagedPolicy(this, "QBusinessWebManagedPolicy" , {
-            managedPolicyName: `QBusinessWebManagedPolicy-${appName}`,
             roles: [iam.Role.fromRoleArn(this, "qBusinessWebRole", qBusinessWebRoleArn)],
             document: new iam.PolicyDocument({
                 statements:[
@@ -274,7 +279,8 @@ export class AmazonQBusinessStack extends cdk.Stack {
             title: appName,
             welcomeMessage: `Welcome to Amazon Q Business!`,
         });
-        this.app = cdk_app
+        this.encryptionKey = encryptionKey;
+        this.app = cdk_app;
         this.index = q_index;
         this.webEndpoint = web_experience.attrDefaultEndpoint;
     }
