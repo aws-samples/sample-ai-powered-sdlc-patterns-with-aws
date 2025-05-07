@@ -22,7 +22,7 @@ In this section you will execute the required step to install the solution in yo
 - [AWS Cloud Development Kit (AWS CDK)](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html): to execute the scrip to create the environment in your AWS account 
 - [AWS Account](https://aws.amazon.com/resources/create-account/): to create the required environment
 - [AWS Command Line Interface (AWS CLI)](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html): to run the AWS CDK command from your terminal
-- [Confluence Cloud](https://developer.atlassian.com/cloud/confluence/): to connect Cloud Cloud as Amazon Q Business data source
+- [Confluence Cloud](https://developer.atlassian.com/cloud/confluence/): to connect Confluence Cloud as Amazon Q Business data source
 - [Jira Cloud](https://developer.atlassian.com/cloud/jira/platform/): to connect Jira as Amazon Q Business plugin
 
 ### npm - Setup
