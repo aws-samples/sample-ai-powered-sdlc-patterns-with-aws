@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-AnyCompanyReads, a company that sells books globally from their physical stores wants to sell books online. The product owner has captured the high level requirements after discussing with business, UX, visual design and market research teams. Let's see how we can use Genertaive AI services on AWS to build the online book store - [AnyCompanyReads](https://catalog.workshops.aws/appsync-immersionday/en-US).
+AnyCompanyReads, a company that sells books globally from their physical stores wants to sell books online. The product owner has captured the high level requirements after discussing with business, UX, visual design and market research teams. Let's see how we can use Generative AI services on AWS to build the online book store - [AnyCompanyReads](https://catalog.workshops.aws/appsync-immersionday/en-US).
 
 ![Alt text](images/AnyCompanyReads.png?raw=true "Title")
 
