@@ -8,7 +8,6 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 interface CustomProps extends cdk.StackProps {
     readonly app: qbusiness.CfnApplication;
     readonly appWebEndpoint: string;
-    readonly encryptionKey: kms.Key;
 }
 
 export class AmazonQJiraPluginStack extends cdk.Stack {
@@ -56,22 +55,37 @@ export class AmazonQJiraPluginStack extends cdk.Stack {
         const jiraClientSecret = jiraClientSecretParameter.valueAsString;
         const jiraRedirectUrl = props.appWebEndpoint + jiraRedirectPathParameter.valueAsString;
 
-        const secret = new secretsmanager.Secret(this, `QBusinessJiraSecret`, {
+        const encryptionKey = new kms.Key(this, "EncryptionKey",{
+            enableKeyRotation: true
+        });
+
+        const secret = new secretsmanager.Secret(this, `AmazonQBusinessJiraSecret`, {
             secretObjectValue: {
                 client_id: cdk.SecretValue.unsafePlainText(jiraClientId),
                 client_secret: cdk.SecretValue.unsafePlainText(jiraClientSecret),
                 redirect_uri: cdk.SecretValue.unsafePlainText(jiraRedirectUrl),
             },
-            encryptionKey: props.encryptionKey
+            encryptionKey: encryptionKey
         });
 
-        // IAM policy and role for the Q Business Confluence Data Source
         const jiraPolicy = new iam.ManagedPolicy(this, 'JiraPolicy', {
             statements: [
                 new iam.PolicyStatement({
-                    sid: 'AllowQBusinessToGetSecretValue',
+                    sid: 'AllowAmazonQBusinessToGetSecretValue',
                     actions: ["secretsmanager:GetSecretValue"],
                     resources: [secret.secretArn],
+                }),
+                new iam.PolicyStatement({
+                    sid: 'AllowsAmazonQToDecryptSecret',
+                    actions: ['kms:Decrypt'],
+                    resources: [encryptionKey.keyArn],
+                    conditions: {
+                        StringLike: {
+                            'kms:ViaService': [
+                                'secretsmanager.*.amazonaws.com',
+                            ],
+                        },
+                    },
                 }),
             ]
         });

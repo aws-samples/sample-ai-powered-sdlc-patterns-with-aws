@@ -8,7 +8,6 @@ export class AmazonQBusinessStack extends cdk.Stack {
     public app: qbusiness.CfnApplication;
     public index: qbusiness.CfnIndex;
     public webEndpoint: string;
-    public encryptionKey: kms.Key;
 
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
@@ -17,10 +16,6 @@ export class AmazonQBusinessStack extends cdk.Stack {
         const region = cdk.Stack.of(this).region
 
         cdk.Stack.of(this).templateOptions.description = 'Amazon Q Business Base Stack';
-
-        const encryptionKey = new kms.Key(this, "EncryptionKey",{
-            enableKeyRotation: true
-        })
 
         const AppNameParameter = new cdk.CfnParameter(this, 'appName', {
             type: 'String',
@@ -42,7 +37,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
         const iamIdentityCenterArn = iamIdentityCenterArnParameter.valueAsString;
         const qBusinessWebRoleArn = qBusinessWebRoleArnParameter.valueAsString;
 
-        const cdk_app = new qbusiness.CfnApplication(this, 'QBusinessApp', {
+        const cdk_app = new qbusiness.CfnApplication(this, 'AmazonQBusinessApp', {
             displayName: appName,
             attachmentsConfiguration: {
                 attachmentsControlMode: "ENABLED",
@@ -53,12 +48,12 @@ export class AmazonQBusinessStack extends cdk.Stack {
         });
 
         
-        const web_role_policy = new iam.ManagedPolicy(this, "QBusinessWebManagedPolicy" , {
-            roles: [iam.Role.fromRoleArn(this, "qBusinessWebRole", qBusinessWebRoleArn)],
+        const web_role_policy = new iam.ManagedPolicy(this, "AmazonQBusinessWebManagedPolicy" , {
+            roles: [iam.Role.fromRoleArn(this, "AmazonQBusinessWebRole", qBusinessWebRoleArn)],
             document: new iam.PolicyDocument({
                 statements:[
                     new iam.PolicyStatement({
-                        sid: "QBusinessIndexPermission",
+                        sid: "AmazonQBusinessIndexPermission",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qbusiness:ListIndices"
@@ -66,7 +61,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         resources: [`arn:aws:qbusiness:${region}:${awsAccountId}:application/${cdk_app.attrApplicationId}`]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QBusinessDataSourcePermission",
+                        sid: "AmazonQBusinessDataSourcePermission",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qbusiness:ListDataSources"
@@ -77,7 +72,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         ]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QBusinessConversationPermission",
+                        sid: "AmazonQBusinessConversationPermission",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qbusiness:Chat",
@@ -98,7 +93,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         resources: [`arn:aws:qbusiness:${region}:${awsAccountId}:application/${cdk_app.attrApplicationId}`]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QBusinessPluginDiscoveryPermissions",
+                        sid: "AmazonQBusinessPluginDiscoveryPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qbusiness:ListPluginTypeMetadata",
@@ -107,7 +102,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         resources: ["*"]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QBusinessRetrieverPermission",
+                        sid: "AmazonQBusinessRetrieverPermission",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qbusiness:GetRetriever"
@@ -118,7 +113,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         ]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QAppsResourceAgnosticPermissions",
+                        sid: "AmazonQAppsResourceAgnosticPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qapps:CreateQApp",
@@ -135,7 +130,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         ]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QAppsAppUniversalPermissions",
+                        sid: "AmazonQAppsAppUniversalPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qapps:DisassociateQAppFromUser"
@@ -145,7 +140,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         ]
                     }),
                     new iam.PolicyStatement({
-                        sid: "QAppsAppOwnerPermissions",
+                        sid: "AmazonQAppsAppOwnerPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qapps:GetQApp",
@@ -171,7 +166,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         }
                     }),
                     new iam.PolicyStatement({
-                        sid: "QAppsPublishedAppPermissions",
+                        sid: "AmazonQAppsPublishedAppPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qapps:GetQApp",
@@ -194,7 +189,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         }
                     }),
                     new iam.PolicyStatement({
-                        sid: "QAppsAppSessionModeratorPermissions",
+                        sid: "AmazonQAppsAppSessionModeratorPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qapps:ImportDocument",
@@ -218,7 +213,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         }
                     }),
                     new iam.PolicyStatement({
-                        sid: "QAppsSharedAppSessionPermissions",
+                        sid: "AmazonQAppsSharedAppSessionPermissions",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "qapps:ImportDocument",
@@ -239,7 +234,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
                         }
                     }),
                     new iam.PolicyStatement({
-                        sid: "QBusinessToQuickSightGenerateEmbedUrlInvocation",
+                        sid: "AmazonQBusinessToQuickSightGenerateEmbedUrlInvocation",
                         effect: iam.Effect.ALLOW,
                         actions:[
                             "quicksight:GenerateEmbedUrlForRegisteredUserWithIdentity"
@@ -250,7 +245,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
             })
         })
 
-        const q_index = new qbusiness.CfnIndex(this, 'QBusinessIndex', {
+        const q_index = new qbusiness.CfnIndex(this, 'AmazonQBusinessIndex', {
             applicationId: cdk_app.attrApplicationId,
             displayName: `${appName}-index`,
             description: "Amazon Q Business Index",
@@ -262,7 +257,7 @@ export class AmazonQBusinessStack extends cdk.Stack {
 
         const indexId = cdk.Fn.select(1, cdk.Fn.split("|", q_index.ref))
 
-        const q_retriever = new qbusiness.CfnRetriever(this, 'QBusinessRetriever', {
+        const q_retriever = new qbusiness.CfnRetriever(this, 'AmazonQBusinessRetriever', {
             applicationId: cdk_app.attrApplicationId,
             displayName: `${appName}-retriever`,
             type: "NATIVE_INDEX",
@@ -273,13 +268,12 @@ export class AmazonQBusinessStack extends cdk.Stack {
             }
         });
 
-        const web_experience = new qbusiness.CfnWebExperience(this, 'QBusinessWebExperience', {
+        const web_experience = new qbusiness.CfnWebExperience(this, 'AmazonQBusinessWebExperience', {
             applicationId: cdk_app.attrApplicationId,
             roleArn: qBusinessWebRoleArn,
             title: appName,
             welcomeMessage: `Welcome to Amazon Q Business!`,
         });
-        this.encryptionKey = encryptionKey;
         this.app = cdk_app;
         this.index = q_index;
         this.webEndpoint = web_experience.attrDefaultEndpoint;

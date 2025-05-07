@@ -7,7 +7,6 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 export interface CustomProps extends cdk.StackProps {
     readonly index: cdk.aws_qbusiness.CfnIndex;
     readonly app: cdk.aws_qbusiness.CfnApplication;
-    readonly encryptionKey: kms.Key;
 }
 
 export class AmazonQConfluenceSourceStack extends cdk.Stack {
@@ -28,7 +27,7 @@ export class AmazonQConfluenceSourceStack extends cdk.Stack {
 
         const confluenceUsernameParameter = new cdk.CfnParameter(this, 'confluenceUsername', {
             type: 'String',
-            description: 'email ID used to log into Confluence'
+            description: 'Email ID used to log into Confluence'
         });
 
         const confluencePasswordParameter = new cdk.CfnParameter(this, 'confluencePassword', {
@@ -40,16 +39,19 @@ export class AmazonQConfluenceSourceStack extends cdk.Stack {
         const confluenceUsername = confluenceUsernameParameter.valueAsString;
         const confluencePassword = confluencePasswordParameter.valueAsString;
 
-        const secret = new secretsmanager.Secret(this, `QBusinessConfluenceSecret`, {
+        const encryptionKey = new kms.Key(this, "EncryptionKey",{
+            enableKeyRotation: true
+        });
+
+        const secret = new secretsmanager.Secret(this, `AmazonQBusinessConfluenceSecret`, {
             secretObjectValue: {
                 username: cdk.SecretValue.unsafePlainText(confluenceUsername),
                 password: cdk.SecretValue.unsafePlainText(confluencePassword),
             },
-            encryptionKey: props.encryptionKey
+            encryptionKey: encryptionKey
         },
         );
 
-        // IAM policy and role for the Q Business Confluence Data Source
         const confluencePolicy = new iam.ManagedPolicy(this, 'ConfluencePolicy', {
             statements: [
                 new iam.PolicyStatement({
@@ -70,7 +72,7 @@ export class AmazonQConfluenceSourceStack extends cdk.Stack {
                 new iam.PolicyStatement({
                     sid: 'AllowsAmazonQToDecryptSecret',
                     actions: ['kms:Decrypt'],
-                    resources: [`arn:aws:kms:${region}:${awsAccountId}:key/key_id`],
+                    resources: [encryptionKey.keyArn],
                     conditions: {
                         StringLike: {
                             'kms:ViaService': [
@@ -122,12 +124,11 @@ export class AmazonQConfluenceSourceStack extends cdk.Stack {
         },
         );
 
-        // Q Business Confluence Source
         new cdk.aws_qbusiness.CfnDataSource(this, 'ConfluenceSource', {
             applicationId: props.app.attrApplicationId,
             displayName: `${props.app.displayName}-ConfluenceDataSource`,
             indexId: props.index.attrIndexId,
-            description: "Q Business Confluence Source",
+            description: "Amazon Q Business Confluence Source",
             roleArn: confluenceRole.roleArn,
             configuration: {
                 type: 'CONFLUENCEV2',

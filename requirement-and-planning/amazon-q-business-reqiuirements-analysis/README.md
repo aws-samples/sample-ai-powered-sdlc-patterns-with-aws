@@ -82,15 +82,15 @@ npm --prefix ../../cdk-common install
 aws sts get-caller-identity
 ```
 
-3. Create a role named `QBusiness-WebExperience-$APP_NAME` with the following trust policy.
+3. Create a role named `AmazonQBusiness-WebExperience-$APP_NAME` with the following trust policy.
 
 ```
-cat << EOF > QBusinessWebExperience_trustPolicy.json
+cat << EOF > AmazonQBusinessWebExperience_trustPolicy.json
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "QBusinessTrustPolicy",
+            "Sid": "AmazonQBusinessTrustPolicy",
             "Effect": "Allow",
             "Principal": {
                 "Service": "application.qbusiness.amazonaws.com"
@@ -104,10 +104,10 @@ cat << EOF > QBusinessWebExperience_trustPolicy.json
 }
 EOF
 
-aws iam create-role --role-name QBusiness-WebExperience-${APP_NAME} \
-    --assume-role-policy-document file://QBusinessWebExperience_trustPolicy.json
+aws iam create-role --role-name AmazonQBusiness-WebExperience-${APP_NAME} \
+    --assume-role-policy-document file://AmazonQBusinessWebExperience_trustPolicy.json
 
-export Q_BUSINESS_WEB_ROLE=$(aws iam get-role --role-name QBusiness-WebExperience-${APP_NAME} --query Role.Arn --output text)
+export AMAZON_Q_BUSINESS_WEB_ROLE=$(aws iam get-role --role-name AmazonQBusiness-WebExperience-${APP_NAME} --query Role.Arn --output text)
 ```
 
 4. Change directory to the `cdk` folder
@@ -127,7 +127,7 @@ cdk bootstrap
 ```
 echo ""
 echo APP_NAME=$APP_NAME
-echo Q_BUSINESS_WEB_ROLE=$Q_BUSINESS_WEB_ROLE
+echo AMAZON_Q_BUSINESS_WEB_ROLE=$AMAZON_Q_BUSINESS_WEB_ROLE
 echo IDENTITY_CENTER_ARN=$IDENTITY_CENTER_ARN
 echo CONFLUENCE_URL=$CONFLUENCE_URL
 echo CONFLUENCE_USERNAME=$CONFLUENCE_USERNAME
@@ -145,7 +145,7 @@ echo JIRA_ACCESS_TOKEN_URL=$JIRA_ACCESS_TOKEN_URL
 ```
 cdk deploy AmazonQBusinessStack --parameters AmazonQBusinessStack:appName=$APP_NAME \
     --parameters AmazonQBusinessStack:iamIdentityCenterArn=$IDENTITY_CENTER_ARN \
-    --parameters AmazonQBusinessStack:qBusinessWebRoleArn=$Q_BUSINESS_WEB_ROLE
+    --parameters AmazonQBusinessStack:qBusinessWebRoleArn=$AMAZON_Q_BUSINESS_WEB_ROLE
 ```
 
 8. Run the following commands to connect a Confluence (Cloud) data source to the Amazon Q Business application.
@@ -240,15 +240,15 @@ Note: Amazon Q has indexed the Confluence pages which has a high level requireme
 
 ![Alt text](images/Jira_Plugin_PK.png?raw=true "Title")
 
-11. After you enter the project key, Amazon Q will give you a preview of the issue to make changes if any. If you are satisfied, then click on 'Submit'. Q will ask you to authorize the connection to Jira.
+11. After you enter the project key, Amazon Q will give you a preview of the issue to make changes if any. If you are satisfied, then click on 'Submit'.Amazon Q will ask you to authorize the connection to Jira.
 
 ![Alt text](images/Jira_AddPlugin_3.png?raw=true "Title")
 
-12. Once authorized, you will see that Q creates the epics in Jira and gives a summary of the epics created.
+12. Once authorized, you will see that Amazon Q creates the epics in Jira and gives a summary of the epics created.
 
 ![Alt text](images/Jira_Plugin_Epic_2.png?raw=true "Title")
 
-13. Next lets leverage Q to create user stories for the epics. Prompt Q to create stories with acceptance criteria. Q will give you a preview of the issue to make changes if any. If you are satisfied, then click on 'Submit'.
+13. Next lets leverage Amazon Q to create user stories for the epics. Prompt Amazon Q to create stories with acceptance criteria. Amazon Q will give you a preview of the issue to make changes if any. If you are satisfied, then click on 'Submit'.
 
 ![Alt text](images/Jira_Plugin_US_AC.png?raw=true "Title")
 
@@ -267,10 +267,10 @@ Run the following command to destroy the Amazon Q Application
 cdk destroy --all
 ```
 
-Finally remove the iam role `QBusiness-WebExperience-${APP_NAME}`
+Finally remove the iam role `AmazonQBusiness-WebExperience-${APP_NAME}`
 
 ```
-aws iam delete-role --role-name QBusiness-WebExperience-${APP_NAME}
+aws iam delete-role --role-name AmazonQBusiness-WebExperience-${APP_NAME}
 ```
 
 ## 7. Security

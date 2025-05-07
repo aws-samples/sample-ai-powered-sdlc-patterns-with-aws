@@ -4,7 +4,7 @@
 
 AnyCompanyReads, a company that sells books globally from their physical stores wants to sell books online. The product owner has captured the high-level requirements after discussing with business, UX, visual design and market research teams. Let's see how we can use Generative AI services on AWS to build the online book store - [AnyCompanyReads](https://catalog.workshops.aws/appsync-immersionday/en-US).
 
-In this project we are going to explorer how Project managers can leverage amazon Q Business to analyze customers feedback, to address issues impacting high-revenue customers. Amazon Q processes customer feedback within specified timeframes and classifies entries as positive or negative. The system converts negative feedback into actionable problem statements and groups similar items. For each group, Amazon Q generates immediate and strategic solutions. The final analysis ranks issues by customer revenue impact and implementation effort using T-shirt sizes.
+In this project we are going to explorer how Project managers can leverage Amazon Q Business to analyze customers feedback, to address issues impacting high-revenue customers. Amazon Q processes customer feedback within specified timeframes and classifies entries as positive or negative. The system converts negative feedback into actionable problem statements and groups similar items. For each group, Amazon Q generates immediate and strategic solutions. The final analysis ranks issues by customer revenue impact and implementation effort using T-shirt sizes.
 
 ## Solution Architecture
 
@@ -124,15 +124,15 @@ Verify your that your terminal is correctly configured with AWS CLI and verify y
 aws sts get-caller-identity
 ```
 
-Create the required `QBusiness-WebExperience-$APP_NAME` role with the following trust policy.
+Create the required `AmazonQBusiness-WebExperience-$APP_NAME` role with the following trust policy.
 
 ```
-cat << EOF > QBusinessWebExperience_trustPolicy.json
+cat << EOF > AmazonQBusinessWebExperience_trustPolicy.json
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "QBusinessTrustPolicy",
+            "Sid": "AmazonQBusinessTrustPolicy",
             "Effect": "Allow",
             "Principal": {
                 "Service": "application.qbusiness.amazonaws.com"
@@ -146,10 +146,10 @@ cat << EOF > QBusinessWebExperience_trustPolicy.json
 }
 EOF
 
-aws iam create-role --role-name QBusiness-WebExperience-${APP_NAME} \
-    --assume-role-policy-document file://QBusinessWebExperience_trustPolicy.json
+aws iam create-role --role-name AmazonQBusiness-WebExperience-${APP_NAME} \
+    --assume-role-policy-document file://AmazonQBusinessWebExperience_trustPolicy.json
 
-export Q_BUSINESS_WEB_ROLE=$(aws iam get-role --role-name QBusiness-WebExperience-${APP_NAME} --query Role.Arn --output text)
+export AMAZON_Q_BUSINESS_WEB_ROLE=$(aws iam get-role --role-name AmazonQBusiness-WebExperience-${APP_NAME} --query Role.Arn --output text)
 ```
 
 Move to the `cdk` folder
@@ -169,7 +169,7 @@ Verify that all the current environment variables are properly configured
 ```
 echo ""
 echo APP_NAME=$APP_NAME
-echo Q_BUSINESS_WEB_ROLE=$Q_BUSINESS_WEB_ROLE
+echo AMAZON_Q_BUSINESS_WEB_ROLE=$AMAZON_Q_BUSINESS_WEB_ROLE
 echo IDENTITY_CENTER_ARN=$IDENTITY_CENTER_ARN
 echo CONFLUENCE_URL=$CONFLUENCE_URL
 echo CONFLUENCE_USERNAME=$CONFLUENCE_USERNAME
@@ -187,7 +187,7 @@ Run the following commands to deploy the Amazon Q Business application named `Am
 ```
 cdk deploy AmazonQBusinessStack --parameters AmazonQBusinessStack:appName=$APP_NAME \
     --parameters AmazonQBusinessStack:iamIdentityCenterArn=$IDENTITY_CENTER_ARN \
-    --parameters AmazonQBusinessStack:qBusinessWebRoleArn=$Q_BUSINESS_WEB_ROLE
+    --parameters AmazonQBusinessStack:qBusinessWebRoleArn=$AMAZON_Q_BUSINESS_WEB_ROLE
 ```
 
 Run the following commands to connect a Confluence (Cloud) data source to the Amazon Q Business application.
@@ -329,10 +329,10 @@ Run the following command to destroy the Amazon Q Application
 cdk destroy --all
 ```
 
-Finally, remove the iam role `QBusiness-WebExperience-${APP_NAME}`
+Finally, remove the iam role `AmazonQBusiness-WebExperience-${APP_NAME}`
 
 ```
-aws iam delete-role --role-name QBusiness-WebExperience-${APP_NAME}
+aws iam delete-role --role-name AmazonQBusiness-WebExperience-${APP_NAME}
 ```
 
 ## Security
