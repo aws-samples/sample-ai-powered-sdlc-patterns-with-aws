@@ -1,0 +1,66 @@
+{
+  "name": "ai-powered-software-development-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered software development assistant that enables teams to ask questions about development guidelines, SOPs, and team knowledge through natural language processing",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm run install:infrastructure && npm run install:backend && npm run install:frontend",
+    "install:infrastructure": "cd infrastructure && npm install",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:integration": "npm run test:backend -- --testPathPattern=integration",
+    "test:e2e": "cd frontend && npm run test:e2e",
+    "deploy:infrastructure": "cd infrastructure && cdk deploy --all",
+    "deploy:frontend": "cd frontend && npm run deploy",
+    "destroy": "cd infrastructure && cdk destroy --all",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm start",
+    "clean": "rm -rf node_modules backend/node_modules frontend/node_modules infrastructure/node_modules"
+  },
+  "keywords": [
+    "ai",
+    "software-development",
+    "assistant",
+    "aws",
+    "bedrock",
+    "cognito",
+    "serverless",
+    "react",
+    "typescript",
+    "natural-language-processing",
+    "document-management",
+    "knowledge-base"
+  ],
+  "author": "AWS Solutions Architecture Team",
+  "license": "MIT-0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/sample-ai-powered-sdlc-patterns-with-aws"
+  },
+  "bugs": {
+    "url": "https://github.com/aws-samples/sample-ai-powered-sdlc-patterns-with-aws/issues"
+  },
+  "homepage": "https://github.com/aws-samples/sample-ai-powered-sdlc-patterns-with-aws#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "workspaces": [
+    "infrastructure",
+    "backend",
+    "frontend"
+  ]
+}
