@@ -15,8 +15,6 @@ from aws_cdk import (
 from constructs import Construct
 from cdk_ecr_deployment import DockerImageName, ECRDeployment
 from aws_cdk.aws_iam import PolicyStatement, AnyPrincipal, Effect, ServicePrincipal
-from cdk_nag import NagSuppressions
-
 
 class AWSAgentStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs):
@@ -99,19 +97,6 @@ class AWSAgentStack(Stack):
             }
         )
 
-        # Add suppressions for the inline policy
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/SaToolFunctionRole/Resource",
-            suppressions=[
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "Lambda needs access to create its own log groups/streams with dynamic names",
-                    "appliesTo": [f"Resource::arn:aws:logs:{region}:<AWS::AccountId>:log-group:/aws/lambda/*"]
-                }
-            ]
-        )
-
         sa_lambda = _lambda.DockerImageFunction(
             self, "SaToolFunction",
             code=_lambda.DockerImageCode.from_ecr(
@@ -132,29 +117,6 @@ class AWSAgentStack(Stack):
             dest=DockerImageName(image_uri)
         )
         sa_lambda.node.add_dependency(ecr_deployment)
-
-        # Add suppressions for ECR deployment role
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/Custom::CDKECRDeploymentbd07c930edb94112a20f03f096f53666512MiB/ServiceRole/Resource",
-            [
-                {
-                    "id": "AwsSolutions-IAM4",
-                    "reason": "ECR Deployment uses AWS Lambda basic execution role which is required for Lambda to function"
-                }
-            ]
-        )
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/Custom::CDKECRDeploymentbd07c930edb94112a20f03f096f53666512MiB/ServiceRole/DefaultPolicy/Resource",
-            [
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "ECR Deployment needs access to ECR repositories with dynamic names",
-                    "appliesTo": ["Resource::*"]
-                }
-            ]
-        )
         repository.grant_pull(sa_lambda.role)
 
         # Grant specific S3 permissions
@@ -165,36 +127,6 @@ class AWSAgentStack(Stack):
             actions=["bedrock:InvokeModel"],
             resources=[f"arn:aws:bedrock:{region}::foundation-model/*"]
         ))
-
-        # Add NagSuppressions for the DefaultPolicy that gets created
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/SaToolFunctionRole/DefaultPolicy/Resource",
-            suppressions=[
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "ECR pull operations require wildcard permissions",
-                    "appliesTo": ["Resource::*"]
-                },
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "S3 operations require wildcard permissions for object operations",
-                    "appliesTo": [
-                        "Action::s3:Abort*",
-                        "Action::s3:DeleteObject*",
-                        "Action::s3:GetBucket*",
-                        "Action::s3:GetObject*",
-                        "Action::s3:List*",
-                        "Resource::<SaToolAssetsBucket3066C078.Arn>/*"
-                    ]
-                },
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "Bedrock requires access to foundation models which are identified by wildcards",
-                    "appliesTo": [f"Resource::arn:aws:bedrock:{region}::foundation-model/*"]
-                }
-            ]
-        )
 
         # Bedrock Agent Role with specific permissions
         bedrock_role = iam.Role(
@@ -218,7 +150,7 @@ class AWSAgentStack(Stack):
             )
         )
 
-        # Drawing Function setup with custom role
+        # Drawing Function setup
         draw_repo_name = "drawing_function"
         draw_image_uri = f"{account}.dkr.ecr.{region}.amazonaws.com/{draw_repo_name}:latest"
 
@@ -274,19 +206,6 @@ class AWSAgentStack(Stack):
             }
         )
 
-        # Add suppressions for the inline policy
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/DrawingFunctionRole/Resource",
-            suppressions=[
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "Lambda needs access to create its own log groups/streams with dynamic names",
-                    "appliesTo": [f"Resource::arn:aws:logs:{region}:<AWS::AccountId>:log-group:/aws/lambda/*"]
-                }
-            ]
-        )
-
         draw_lambda = _lambda.DockerImageFunction(
             self, "DrawingFunction",
             code=_lambda.DockerImageCode.from_ecr(
@@ -318,58 +237,7 @@ class AWSAgentStack(Stack):
             action="lambda:InvokeFunction"
         )
 
-        # Add NagSuppressions for the DrawingFunction DefaultPolicy
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/DrawingFunctionRole/DefaultPolicy/Resource",
-            suppressions=[
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "ECR pull operations require wildcard permissions",
-                    "appliesTo": ["Resource::*"]
-                },
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "S3 operations require wildcard permissions for object operations",
-                    "appliesTo": [
-                        "Action::s3:Abort*",
-                        "Action::s3:DeleteObject*",
-                        "Action::s3:GetBucket*",
-                        "Action::s3:GetObject*",
-                        "Action::s3:List*",
-                        "Resource::<SaToolAssetsBucket3066C078.Arn>/*"
-                    ]
-                },
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "Bedrock requires access to foundation models which are identified by wildcards",
-                    "appliesTo": [f"Resource::arn:aws:bedrock:{region}::foundation-model/*"]
-                }
-            ]
-        )
-
-        # Add NagSuppressions for BedrockAgentRole DefaultPolicy
-        NagSuppressions.add_resource_suppressions_by_path(
-            self,
-            f"/{self.stack_name}/BedrockAgentRole/DefaultPolicy/Resource",
-            suppressions=[
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "Lambda invoke permissions require wildcard for versions/aliases",
-                    "appliesTo": [
-                        "Resource::<SaToolFunction90B9D92B.Arn>:*",
-                        "Resource::<DrawingFunctionA45218E6.Arn>:*"
-                    ]
-                },
-                {
-                    "id": "AwsSolutions-IAM5",
-                    "reason": "Bedrock requires access to foundation models which are identified by wildcards",
-                    "appliesTo": [f"Resource::arn:aws:bedrock:{region}::foundation-model/*"]
-                }
-            ]
-        )
-
-        # Read your OpenAPI JSON
+        # Read OpenAPI JSON
         spec_path = os.path.join(sa_tool_dir, "agent_aws_openapi.json")
         if not os.path.exists(spec_path):
             raise FileNotFoundError(f"Cannot find OpenAPI spec at {spec_path}")
@@ -394,7 +262,7 @@ class AWSAgentStack(Stack):
                     action_group_executor=bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=sa_lambda.function_arn
                     ),
-                    api_schema=bedrock.CfnAgent.APISchemaProperty( 
+                    api_schema=bedrock.CfnAgent.APISchemaProperty(
                         payload=schema
                     )
                 ),
