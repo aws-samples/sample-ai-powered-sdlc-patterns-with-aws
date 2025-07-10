@@ -29,6 +29,8 @@ This solution is particularly valuable for organizations seeking to streamline t
 - Upload your architectural drawings and ask the tool for explaning the details of the architecture
 - Estimate costs for the proposed architecture.
 
+You can access the working demo of this pattern through: http://demo-1085524942.us-west-2.elb.amazonaws.com/ 
+
 ## Solution Architecture
 
 ![Solution Architecture](images/agent_arch.jpg "Solution Architecture")
@@ -36,7 +38,7 @@ This solution is particularly valuable for organizations seeking to streamline t
 
 ## Prerequisites
 
-- AWS CLI configured with appropriate permissions
+- AWS CLI & CDK configured with appropriate permissions
 - Docker installed and running
 - Python 3.8 or later
 - Node.js 14 or later (for CDK)
@@ -56,17 +58,17 @@ This solution is particularly valuable for organizations seeking to streamline t
 2. Create and activate a virtual environment:
 
 ```
- python3 -m venv .venv
- source .venv/bin/activate
- pip install -r requirements.txt
- cd functions/drawing_function/
-
+ python3 -m venv venv
+ source ./venv/bin/activate
+ 
 ```
 
 3. Install dependencies:
 
 ```
+ cd functions/drawing_function/
  pip install -r requirements.txt
+
 ```
 
 4. Before moving to cdk setup; In the functions/drawing_function folder, run below commands:
@@ -83,7 +85,10 @@ This solution is particularly valuable for organizations seeking to streamline t
 5. Bootstrap your AWS environment (if not already done):
 
 ```
-$ cdk bootstrap
+cd ../../cdk/
+pip install -r requirements.txt 
+cdk bootstrap
+
 ```
 
 ## Deployment
@@ -92,6 +97,17 @@ To deploy the stack:
 
 ```
 $ cdk deploy
+
+```
+* Note the Agent ID and S3 bucket name contains "satoolassetsbucket" in it and run the below commands accordingly:
+
+**Set environment variables**
+
+```
+export AWS_DEFAULT_REGION=us-west-2
+export AGENT_ID= XXXXXXXX # WRITE YOUR BEDROCK AGENT ID
+Aws configure # SET ALSO AWS CREDENTIALS
+
 ```
 
 This will:
@@ -125,19 +141,16 @@ cd ../../streamlit/
 pip install -r requirements.txt
 ```
 
-**Set environment variables**
-```
-export AWS_DEFAULT_REGION=us-west-2
-export AGENT_ID= XXXXXXXX # WRITE YOUR BEDROCK AGENT ID
-# SET ALSO AWS CREDENTIALS
-```
+**Edit Enviroment Variables**
 
+- Edit the agent2_tools.py file and change the Agent ID.
+- Edit the chatbot.py and change the Agent ID and S3 bucket name crated above
 
 **Run the Streamlit app:**
 ```
 streamlit run chatbot.py
-```
 
+```
 
 ### Manual Setup
 If you prefer to install everything manually, follow the steps outlined in the [**README-ManualSetup.md**](README-ManualSetup.md) file.
