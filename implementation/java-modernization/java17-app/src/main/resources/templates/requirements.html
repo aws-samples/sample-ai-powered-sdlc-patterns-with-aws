@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirements - Java 17 Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .use-case-card {
+            margin-bottom: 20px;
+        }
+        .use-case-card .card-header {
+            font-weight: bold;
+        }
+        .requirement-card {
+            height: 100%;
+        }
+        .priority-high {
+            border-left: 5px solid #dc3545;
+        }
+        .priority-medium {
+            border-left: 5px solid #ffc107;
+        }
+        .priority-low {
+            border-left: 5px solid #0dcaf0;
+        }
+        .flow-text {
+            white-space: pre-line;
+            font-size: 0.9rem;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            border-bottom: 2px solid #ff9900;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1>Requirements <span class="aws-orange">Documentation</span></h1>
+            <p>Use cases and requirements for the Java 8 Product Management application</p>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid justify-content-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/code-analysis">Code Analysis</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/requirements">Requirements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/system-behavior">System Behavior</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/h2-console" target="_blank">Database Console</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mb-5">
+        <ul class="nav nav-tabs" id="requirementsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="use-cases-tab" data-bs-toggle="tab" data-bs-target="#use-cases" type="button" role="tab" aria-controls="use-cases" aria-selected="true">Use Cases</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="functional-tab" data-bs-toggle="tab" data-bs-target="#functional" type="button" role="tab" aria-controls="functional" aria-selected="false">Functional Requirements</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="non-functional-tab" data-bs-toggle="tab" data-bs-target="#non-functional" type="button" role="tab" aria-controls="non-functional" aria-selected="false">Non-Functional Requirements</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="requirementsTabContent">
+            <!-- Use Cases Tab -->
+            <div class="tab-pane fade show active" id="use-cases" role="tabpanel" aria-labelledby="use-cases-tab">
+                <h3 class="section-title">Use Cases</h3>
+                
+                <div class="use-case-diagram mb-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="card-title">Use Case Diagram</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <object data="/images/use-case-diagram.svg" type="image/svg+xml" style="width: 100%; max-width: 800px; height: auto;">
+                                <pre class="p-3 bg-light border rounded">
+                                  +---------------------------+
+                                  |                           |
+                                  |    Product Management     |
+                                  |        System             |
+                                  |                           |
+                                  |                           |
++-------------+                   |  +-------------------+    |
+|             |                   |  |                   |    |
+|             |--------------------->| View Products     |    |
+|             |                   |  |                   |    |
+|             |                   |  +-------------------+    |
+|             |                   |                           |
+|             |                   |  +-------------------+    |
+|             |                   |  |                   |    |
+|  Customer   |--------------------->| View Available    |    |
+|             |                   |  | Products          |    |
+|             |                   |  |                   |    |
+|             |                   |  +-------------------+    |
+|             |                   |                           |
+|             |                   |  +-------------------+    |
+|             |--------------------->| View Products     |    |
+|             |                   |  | Sorted by Price   |    |
++-------------+                   |  |                   |    |
+                                  |  +-------------------+    |
+                                  |                           |
+                                  |                           |
++-------------+                   |  +-------------------+    |
+|             |                   |  |                   |    |
+|             |--------------------->| Add Product       |    |
+|             |                   |  |                   |    |
+|             |                   |  +-------------------+    |
+|             |                   |                           |
+|Administrator|                   |  +-------------------+    |
+|             |--------------------->| Delete Product    |    |
+|             |                   |  |                   |    |
+|             |                   |  +-------------------+    |
++-------------+                   |                           |
+                                  +---------------------------+
+                                </pre>
+                            </object>
+                            <p class="mt-3 text-muted">This diagram shows the main use cases and actors in the system.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="use-case-details">
+                    <div class="card use-case-card" th:each="useCase : ${useCases}">
+                        <div class="card-header bg-info text-white">
+                            <span th:text="${useCase.id + ': ' + useCase.name}"></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-3 fw-bold">Actor:</div>
+                                <div class="col-md-9" th:text="${useCase.actor}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-3 fw-bold">Description:</div>
+                                <div class="col-md-9" th:text="${useCase.description}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-3 fw-bold">Preconditions:</div>
+                                <div class="col-md-9" th:text="${useCase.preconditions}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-3 fw-bold">Main Flow:</div>
+                                <div class="col-md-9 flow-text" th:text="${useCase.mainFlow}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-3 fw-bold">Alternative Flow:</div>
+                                <div class="col-md-9 flow-text" th:text="${useCase.alternativeFlow}"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 fw-bold">Postconditions:</div>
+                                <div class="col-md-9" th:text="${useCase.postconditions}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Functional Requirements Tab -->
+            <div class="tab-pane fade" id="functional" role="tabpanel" aria-labelledby="functional-tab">
+                <h3 class="section-title">Functional Requirements</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4" th:each="req : ${functionalRequirements}">
+                        <div th:class="'card requirement-card priority-' + ${#strings.toLowerCase(req.priority)}">
+                            <div class="card-header bg-primary text-white">
+                                <span th:text="${req.id + ': ' + req.name}"></span>
+                                <span th:class="'badge float-end bg-' + (${req.priority == 'High'} ? 'danger' : (${req.priority == 'Medium'} ? 'warning' : 'info'))" th:text="${req.priority}"></span>
+                            </div>
+                            <div class="card-body">
+                                <p th:text="${req.description}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="card-title">Requirements Traceability Matrix</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Requirement ID</th>
+                                        <th>UC-1</th>
+                                        <th>UC-2</th>
+                                        <th>UC-3</th>
+                                        <th>UC-4</th>
+                                        <th>UC-5</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>FR-1: Product Management</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>FR-2: Product Filtering</td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>FR-3: Product Sorting</td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center">✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>FR-4: Inventory Value Calculation</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>FR-5: Product Data Persistence</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center">✓</td>
+                                        <td class="text-center">✓</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Non-Functional Requirements Tab -->
+            <div class="tab-pane fade" id="non-functional" role="tabpanel" aria-labelledby="non-functional-tab">
+                <h3 class="section-title">Non-Functional Requirements</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4" th:each="req : ${nonFunctionalRequirements}">
+                        <div th:class="'card requirement-card priority-' + ${#strings.toLowerCase(req.priority)}">
+                            <div class="card-header bg-dark text-white">
+                                <span th:text="${req.id + ': ' + req.name}"></span>
+                                <span th:class="'badge float-end bg-' + (${req.priority == 'High'} ? 'danger' : (${req.priority == 'Medium'} ? 'warning' : 'info'))" th:text="${req.priority}"></span>
+                            </div>
+                            <div class="card-body">
+                                <p th:text="${req.description}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-warning">
+                        <h4 class="card-title">Quality Attributes</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Performance</h5>
+                                        <p class="card-text">The system should respond quickly to user requests and handle multiple concurrent users efficiently.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Usability</h5>
+                                        <p class="card-text">The system should be intuitive and easy to use, with clear navigation and responsive design.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Maintainability</h5>
+                                        <p class="card-text">The code should be well-structured, documented, and easy to modify or extend.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Reliability</h5>
+                                        <p class="card-text">The system should be stable and handle errors gracefully without crashing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Compatibility</h5>
+                                        <p class="card-text">The system should work consistently across different browsers and devices.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Scalability</h5>
+                                        <p class="card-text">The system should be able to handle growth in data volume and user base.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p>Java 8 Application for Amazon Q Developer Modernization Demo</p>
+            <p>This application demonstrates Java 8 features that can be modernized to Java 17</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

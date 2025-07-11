@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Deployment Options - Java 21 Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/deployment-options.css}">
+    <style>
+        .header {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .aws-orange {
+            color: #ff9900;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .deployment-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        .deployment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .price-badge {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+        .price-low { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+        .price-medium { 
+            background: #fff3cd; 
+            color: #856404; 
+        }
+        .price-high { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .pros { 
+            color: #28a745; 
+        }
+        .cons { 
+            color: #dc3545; 
+        }
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .complexity-badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+        }
+        .recommended {
+            border: 2px solid #ff9900;
+            position: relative;
+        }
+        .recommended::before {
+            content: "RECOMMENDED";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #ff9900;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .comparison-table {
+            font-size: 0.9rem;
+        }
+        .footer {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+        .nav-link.active {
+            background-color: #ff9900 !important;
+            color: white !important;
+        }
+        .script-badge {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+        .use-case-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1><i class="fab fa-aws"></i> AWS Deployment Options <span class="aws-orange">Guide</span></h1>
+            <p>Choose the best AWS deployment option for your Java 21 modernized service</p>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid justify-content-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/testing-report">Testing Report</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/migration-design">Migration Design</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/deployment-options">AWS Deployment Options</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/production-readiness">Production Readiness</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Quick Stats Overview -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title">Deployment Options Overview</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <span class="stat-number">6</span>
+                                <span>Deployment Options</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-number">$2-200</span>
+                                <span>Monthly Cost Range</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-number">5-30</span>
+                                <span>Setup Time (minutes)</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-number">5</span>
+                                <span>Database Options</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Comparison Table -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h3><i class="fas fa-chart-bar"></i> Quick Comparison</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped comparison-table">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th style="color: #000; font-weight: bold;">Service</th>
+                                        <th style="color: #000; font-weight: bold;">Monthly Cost</th>
+                                        <th style="color: #000; font-weight: bold;">Complexity</th>
+                                        <th style="color: #000; font-weight: bold;">Setup Time</th>
+                                        <th style="color: #000; font-weight: bold;">Best For</th>
+                                        <th style="color: #000; font-weight: bold;">Script</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="option : ${deploymentOptions}">
+                                        <td>
+                                            <strong th:text="${option.name}"></strong>
+                                            <span th:if="${option.recommended}" class="badge bg-warning text-dark ms-2">RECOMMENDED</span>
+                                        </td>
+                                        <td>
+                                            <span th:class="'badge price-' + ${option.priceLevel}" th:text="${option.price}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:class="'badge ' + (${option.complexity} == 'Low' ? 'bg-success' : (${option.complexity} == 'Medium' ? 'bg-warning' : 'bg-danger')) + ' complexity-badge'" 
+                                                  th:text="${option.complexity}"></span>
+                                        </td>
+                                        <td th:text="${option.setupTime}"></td>
+                                        <td th:text="${option.bestFor}"></td>
+                                        <td>
+                                            <span class="script-badge" th:text="${option.script}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Service Cards -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3><i class="fas fa-cloud"></i> Detailed Deployment Options</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-xl-4 mb-4" th:each="option : ${deploymentOptions}">
+                                <div class="card deployment-card" th:classappend="${option.recommended} ? 'recommended' : ''">
+                                    <div class="card-body text-center">
+                                        <div class="service-icon aws-orange">
+                                            <i th:class="${option.icon}"></i>
+                                        </div>
+                                        <h4 th:text="${option.name}"></h4>
+                                        <div th:class="'price-badge price-' + ${option.priceLevel} + ' mb-3'" th:text="${option.price}"></div>
+                                        
+                                        <p class="text-muted" th:text="${option.description}"></p>
+                                        
+                                        <ul class="feature-list text-start">
+                                            <li th:each="pro : ${option.pros}">
+                                                <i class="fas fa-check pros"></i> <span th:text="${pro}"></span>
+                                            </li>
+                                            <li th:each="con : ${option.cons}">
+                                                <i class="fas fa-times cons"></i> <span th:text="${con}"></span>
+                                            </li>
+                                        </ul>
+                                        
+                                        <div class="mt-3">
+                                            <span th:class="'badge ' + (${option.complexity} == 'Low' ? 'bg-success' : (${option.complexity} == 'Medium' ? 'bg-warning' : 'bg-danger'))" 
+                                                  th:text="'Complexity: ' + ${option.complexity}"></span>
+                                            <span class="badge bg-info ms-2" th:text="'Setup: ' + ${option.setupTime}"></span>
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <strong>Best for:</strong> <span th:text="${option.bestFor}"></span>
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <span class="script-badge" th:text="'Script: ' + ${option.script}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Options -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h3><i class="fas fa-database"></i> Database Options</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Your Java 21 application currently uses H2 in-memory database. Consider these production alternatives:</p>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th style="color: #000; font-weight: bold;">Database</th>
+                                        <th style="color: #000; font-weight: bold;">Type</th>
+                                        <th style="color: #000; font-weight: bold;">Instance</th>
+                                        <th style="color: #000; font-weight: bold;">Monthly Cost</th>
+                                        <th style="color: #000; font-weight: bold;">Best For</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="db : ${databaseOptions}">
+                                        <td>
+                                            <strong th:text="${db.name}"></strong>
+                                            <span th:if="${db.name == 'H2 (Current)'}" class="badge bg-primary ms-2">CURRENT</span>
+                                        </td>
+                                        <td th:text="${db.type}"></td>
+                                        <td th:text="${db.instance}"></td>
+                                        <td>
+                                            <span th:class="'badge price-' + ${db.costLevel}" th:text="${db.cost}"></span>
+                                        </td>
+                                        <td th:text="${db.bestFor}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations by Use Case -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h3><i class="fas fa-lightbulb"></i> Recommendations by Use Case</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4 mb-3" th:each="rec : ${recommendations}">
+                                <div class="use-case-card">
+                                    <h5 th:text="${rec.useCase}"></h5>
+                                    <p><strong>Recommended:</strong> <span th:text="${rec.service}"></span></p>
+                                    <p><strong>Cost:</strong> <span th:text="${rec.cost}"></span></p>
+                                    <p><strong>Why:</strong> <span th:text="${rec.reason}"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h3><i class="fas fa-calculator"></i> Cost Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>💰 Most Cost-Effective</h5>
+                                <div class="alert alert-success">
+                                    <strong>AWS Lambda + DynamoDB</strong><br>
+                                    <span class="h4">$2-10/month</span><br>
+                                    <small>Perfect for variable traffic patterns and development environments</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>🏆 Best Value for Production</h5>
+                                <div class="alert alert-info">
+                                    <strong>AWS App Runner</strong><br>
+                                    <span class="h4">$25-51/month</span><br>
+                                    <small>Managed service with auto-scaling and minimal configuration</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h5>📊 Total Cost of Ownership (TCO) Comparison</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th style="color: #000; font-weight: bold;">Service</th>
+                                                <th style="color: #000; font-weight: bold;">Compute</th>
+                                                <th style="color: #000; font-weight: bold;">Database</th>
+                                                <th style="color: #000; font-weight: bold;">Load Balancer</th>
+                                                <th style="color: #000; font-weight: bold;">Total/Month</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>App Runner + RDS</td>
+                                                <td>$25-51</td>
+                                                <td>$13.50</td>
+                                                <td>Included</td>
+                                                <td><strong>$38-65</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>ECS Fargate + RDS</td>
+                                                <td>$21</td>
+                                                <td>$13.50</td>
+                                                <td>$16.20</td>
+                                                <td><strong>$51</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lambda + DynamoDB</td>
+                                                <td>$2-10</td>
+                                                <td>$1.56</td>
+                                                <td>Included</td>
+                                                <td><strong>$4-12</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>EC2 + RDS</td>
+                                                <td>$19</td>
+                                                <td>$13.50</td>
+                                                <td>$16.20</td>
+                                                <td><strong>$49</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Scripts -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3><i class="fas fa-code"></i> Ready-to-Use Deployment Scripts</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>All deployment scripts are available in the project's <code>deployment-scripts/</code> directory:</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>🚀 Quick Start Commands</h5>
+                                <pre class="bg-light p-3 rounded"><code># Make scripts executable
+chmod +x deployment-scripts/*.sh
+
+# Deploy to App Runner (Recommended)
+./deployment-scripts/app-runner-deploy.sh
+
+# Deploy to ECS Fargate
+./deployment-scripts/ecs-fargate-deploy.sh
+
+# Deploy to Lambda
+./deployment-scripts/lambda-deploy.sh</code></pre>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>📋 Available Scripts</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><i class="fas fa-rocket text-primary"></i> app-runner-deploy.sh</span>
+                                        <span class="badge bg-success">Recommended</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fab fa-docker text-info"></i> ecs-fargate-deploy.sh
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-bolt text-warning"></i> lambda-deploy.sh
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-seedling text-success"></i> elastic-beanstalk-deploy.sh
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-server text-secondary"></i> ec2-deploy.sh
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-dharmachakra text-primary"></i> eks-deploy.sh
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <h6><i class="fas fa-info-circle"></i> Prerequisites</h6>
+                            <ul class="mb-0">
+                                <li>AWS CLI configured with appropriate permissions</li>
+                                <li>Docker installed (for container-based deployments)</li>
+                                <li>EB CLI installed (for Elastic Beanstalk deployment)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Calculator Link -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <h5><i class="fas fa-calculator"></i> Get Accurate Pricing</h5>
+                    <p>All prices shown are estimates for US East (N. Virginia) region based on typical usage patterns.</p>
+                    <p>For precise pricing based on your specific requirements, use the 
+                        <a href="https://calculator.aws" target="_blank" class="alert-link">
+                            <strong>AWS Pricing Calculator</strong> <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p>AWS Deployment Options for Java 21 Modernization Demo</p>
+            <p>Choose the deployment option that best fits your requirements and budget</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

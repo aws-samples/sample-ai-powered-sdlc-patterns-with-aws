@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Deployment Options - Java 21 Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background: linear-gradient(135deg, #232f3e 0%, #ff9900 100%);
+            color: white;
+            padding: 40px 0;
+        }
+        .deployment-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        .deployment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .price-badge {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+        .price-low { background: #d4edda; color: #155724; }
+        .price-medium { background: #fff3cd; color: #856404; }
+        .price-high { background: #f8d7da; color: #721c24; }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .pros { color: #28a745; }
+        .cons { color: #dc3545; }
+        .comparison-table {
+            font-size: 0.9rem;
+        }
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .aws-orange { color: #ff9900; }
+        .complexity-badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+        }
+        .recommended {
+            border: 2px solid #ff9900;
+            position: relative;
+        }
+        .recommended::before {
+            content: "RECOMMENDED";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #ff9900;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1><i class="fab fa-aws"></i> AWS Deployment Options</h1>
+            <p class="lead">Java 21 Spring Boot Service Deployment Guide</p>
+            <p>Choose the best deployment option for your Java 21 modernized application</p>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <!-- Quick Comparison Table -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3><i class="fas fa-chart-bar"></i> Quick Comparison Overview</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped comparison-table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Monthly Cost</th>
+                                        <th>Complexity</th>
+                                        <th>Scaling</th>
+                                        <th>Management</th>
+                                        <th>Best For</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>AWS App Runner</strong></td>
+                                        <td><span class="badge price-medium">$25-51</span></td>
+                                        <td><span class="badge bg-success complexity-badge">Low</span></td>
+                                        <td>Auto (0-25)</td>
+                                        <td>Fully Managed</td>
+                                        <td>Quick deployment, demos</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ECS Fargate</strong></td>
+                                        <td><span class="badge price-medium">$47-65</span></td>
+                                        <td><span class="badge bg-warning complexity-badge">Medium</span></td>
+                                        <td>Auto + Manual</td>
+                                        <td>Container Managed</td>
+                                        <td>Production workloads</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AWS Lambda</strong></td>
+                                        <td><span class="badge price-low">$2-10</span></td>
+                                        <td><span class="badge bg-warning complexity-badge">Medium</span></td>
+                                        <td>Automatic</td>
+                                        <td>Serverless</td>
+                                        <td>Event-driven, variable load</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>EC2</strong></td>
+                                        <td><span class="badge price-medium">$25-50</span></td>
+                                        <td><span class="badge bg-danger complexity-badge">High</span></td>
+                                        <td>Manual/Auto</td>
+                                        <td>Self Managed</td>
+                                        <td>Full control needed</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Elastic Beanstalk</strong></td>
+                                        <td><span class="badge price-medium">$40-55</span></td>
+                                        <td><span class="badge bg-success complexity-badge">Low</span></td>
+                                        <td>Auto</td>
+                                        <td>Platform Managed</td>
+                                        <td>Traditional apps, easy mgmt</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>EKS</strong></td>
+                                        <td><span class="badge price-high">$160-200</span></td>
+                                        <td><span class="badge bg-danger complexity-badge">High</span></td>
+                                        <td>Advanced</td>
+                                        <td>Kubernetes</td>
+                                        <td>Enterprise, microservices</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Service Cards -->
+        <div class="row">
+            <!-- AWS App Runner -->
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card deployment-card recommended">
+                    <div class="card-body text-center">
+                        <div class="service-icon aws-orange">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h4>AWS App Runner</h4>
+                        <div class="price-badge price-medium mb-3">$25-51/month</div>
+                        
+                        <ul class="feature-list text-start">
+                            <li><i class="fas fa-check pros"></i> Fully managed container service</li>
+                            <li><i class="fas fa-check pros"></i> Auto-scaling (0-25 instances)</li>
+                            <li><i class="fas fa-check pros"></i> Built-in load balancing</li>
+                            <li><i class="fas fa-check pros"></i> HTTPS by default</li>
+                            <li><i class="fas fa-check pros"></i> Direct GitHub deployment</li>
+                            <li><i class="fas fa-times cons"></i> Limited customization</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-success">Complexity: Low</span>
+                            <span class="badge bg-info">Setup: 5 min</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>Best for:</strong> Quick demos, POCs, simple web apps
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ECS Fargate -->
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card deployment-card">
+                    <div class="card-body text-center">
+                        <div class="service-icon aws-orange">
+                            <i class="fab fa-docker"></i>
+                        </div>
+                        <h4>ECS Fargate</h4>
+                        <div class="price-badge price-medium mb-3">$47-65/month</div>
+                        
+                        <ul class="feature-list text-start">
+                            <li><i class="fas fa-check pros"></i> Serverless containers</li>
+                            <li><i class="fas fa-check pros"></i> Full container control</li>
+                            <li><i class="fas fa-check pros"></i> Auto-scaling</li>
+                            <li><i class="fas fa-check pros"></i> Service discovery</li>
+                            <li><i class="fas fa-check pros"></i> Blue/green deployments</li>
+                            <li><i class="fas fa-times cons"></i> Container expertise needed</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-warning">Complexity: Medium</span>
+                            <span class="badge bg-info">Setup: 15 min</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>Best for:</strong> Production workloads, container-based apps
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AWS Lambda -->
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card deployment-card">
+                    <div class="card-body text-center">
+                        <div class="service-icon aws-orange">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>AWS Lambda</h4>
+                        <div class="price-badge price-low mb-3">$2-10/month</div>
+                        
+                        <ul class="feature-list text-start">
+                            <li><i class="fas fa-check pros"></i> Pay per request</li>
+                            <li><i class="fas fa-check pros"></i> Automatic scaling</li>
+                            <li><i class="fas fa-check pros"></i> No server management</li>
+                            <li><i class="fas fa-check pros"></i> Event-driven</li>
+                            <li><i class="fas fa-times cons"></i> Cold start latency</li>
+                            <li><i class="fas fa-times cons"></i> 15-minute timeout limit</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-warning">Complexity: Medium</span>
+                            <span class="badge bg-info">Setup: 10 min</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>Best for:</strong> Variable traffic, event-driven apps
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EC2 -->
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card deployment-card">
+                    <div class="card-body text-center">
+                        <div class="service-icon aws-orange">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h4>Amazon EC2</h4>
+                        <div class="price-badge price-medium mb-3">$25-50/month</div>
+                        
+                        <ul class="feature-list text-start">
+                            <li><i class="fas fa-check pros"></i> Full OS control</li>
+                            <li><i class="fas fa-check pros"></i> Custom configurations</li>
+                            <li><i class="fas fa-check pros"></i> Reserved instance savings</li>
+                            <li><i class="fas fa-check pros"></i> Multiple deployment options</li>
+                            <li><i class="fas fa-times cons"></i> Infrastructure management</li>
+                            <li><i class="fas fa-times cons"></i> Security patching required</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-danger">Complexity: High</span>
+                            <span class="badge bg-info">Setup: 20 min</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>Best for:</strong> Custom requirements, full control
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Elastic Beanstalk -->
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card deployment-card">
+                    <div class="card-body text-center">
+                        <div class="service-icon aws-orange">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h4>Elastic Beanstalk</h4>
+                        <div class="price-badge price-medium mb-3">$40-55/month</div>
+                        
+                        <ul class="feature-list text-start">
+                            <li><i class="fas fa-check pros"></i> Easy deployment</li>
+                            <li><i class="fas fa-check pros"></i> Auto-scaling</li>
+                            <li><i class="fas fa-check pros"></i> Health monitoring</li>
+                            <li><i class="fas fa-check pros"></i> Rolling deployments</li>
+                            <li><i class="fas fa-check pros"></i> Multiple environments</li>
+                            <li><i class="fas fa-times cons"></i> Platform limitations</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-success">Complexity: Low</span>
+                            <span class="badge bg-info">Setup: 10 min</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>Best for:</strong> Traditional apps, easy management
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EKS -->
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card deployment-card">
+                    <div class="card-body text-center">
+                        <div class="service-icon aws-orange">
+                            <i class="fas fa-dharmachakra"></i>
+                        </div>
+                        <h4>Amazon EKS</h4>
+                        <div class="price-badge price-high mb-3">$160-200/month</div>
+                        
+                        <ul class="feature-list text-start">
+                            <li><i class="fas fa-check pros"></i> Kubernetes orchestration</li>
+                            <li><i class="fas fa-check pros"></i> Advanced scaling</li>
+                            <li><i class="fas fa-check pros"></i> Service mesh integration</li>
+                            <li><i class="fas fa-check pros"></i> Multi-AZ deployment</li>
+                            <li><i class="fas fa-times cons"></i> High complexity</li>
+                            <li><i class="fas fa-times cons"></i> Kubernetes expertise needed</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-danger">Complexity: High</span>
+                            <span class="badge bg-info">Setup: 30 min</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong>Best for:</strong> Enterprise, microservices, complex apps
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h3><i class="fas fa-lightbulb"></i> Deployment Recommendations</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-rocket"></i> Quick Demo/POC</h5>
+                                <p><strong>Recommended:</strong> AWS App Runner</p>
+                                <p><strong>Cost:</strong> ~$25/month</p>
+                                <p><strong>Why:</strong> Fastest deployment, minimal configuration, perfect for demonstrations</p>
+                                <hr>
+                                
+                                <h5><i class="fas fa-building"></i> Production Application</h5>
+                                <p><strong>Recommended:</strong> ECS Fargate + RDS</p>
+                                <p><strong>Cost:</strong> ~$75/month</p>
+                                <p><strong>Why:</strong> Scalable, managed, production-ready with database</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-dollar-sign"></i> Cost-Optimized</h5>
+                                <p><strong>Recommended:</strong> Lambda + DynamoDB</p>
+                                <p><strong>Cost:</strong> ~$5/month</p>
+                                <p><strong>Why:</strong> Pay per use, serverless, great for variable traffic</p>
+                                <hr>
+                                
+                                <h5><i class="fas fa-cogs"></i> Full Control</h5>
+                                <p><strong>Recommended:</strong> EC2 + RDS</p>
+                                <p><strong>Cost:</strong> ~$45/month</p>
+                                <p><strong>Why:</strong> Complete infrastructure control, custom configurations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Options -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3><i class="fas fa-database"></i> Database Options</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Database</th>
+                                        <th>Type</th>
+                                        <th>Instance</th>
+                                        <th>Monthly Cost</th>
+                                        <th>Best For</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>H2 (Current)</strong></td>
+                                        <td>In-Memory</td>
+                                        <td>Embedded</td>
+                                        <td><span class="badge price-low">$0</span></td>
+                                        <td>Development, demos</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RDS PostgreSQL</strong></td>
+                                        <td>Relational</td>
+                                        <td>db.t3.micro</td>
+                                        <td><span class="badge price-medium">$13.50</span></td>
+                                        <td>Production apps</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RDS MySQL</strong></td>
+                                        <td>Relational</td>
+                                        <td>db.t3.micro</td>
+                                        <td><span class="badge price-medium">$13.50</span></td>
+                                        <td>Traditional apps</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Aurora Serverless v2</strong></td>
+                                        <td>Serverless SQL</td>
+                                        <td>0.5-1 ACU</td>
+                                        <td><span class="badge price-medium">$43.80</span></td>
+                                        <td>Variable workloads</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>DynamoDB</strong></td>
+                                        <td>NoSQL</td>
+                                        <td>On-Demand</td>
+                                        <td><span class="badge price-low">$1.56</span></td>
+                                        <td>Serverless apps</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Scripts -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h3><i class="fas fa-code"></i> Ready-to-Use Deployment Scripts</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>All deployment scripts are available in the <code>deployment-scripts/</code> directory:</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <i class="fas fa-rocket"></i> <code>app-runner-deploy.sh</code>
+                                        <small class="text-muted d-block">AWS App Runner deployment</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fab fa-docker"></i> <code>ecs-fargate-deploy.sh</code>
+                                        <small class="text-muted d-block">ECS Fargate with ECR</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-bolt"></i> <code>lambda-deploy.sh</code>
+                                        <small class="text-muted d-block">Serverless Lambda deployment</small>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <i class="fas fa-seedling"></i> <code>elastic-beanstalk-deploy.sh</code>
+                                        <small class="text-muted d-block">Elastic Beanstalk deployment</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-server"></i> <code>ec2-deploy.sh</code>
+                                        <small class="text-muted d-block">Traditional EC2 deployment</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-dharmachakra"></i> <code>eks-deploy.sh</code>
+                                        <small class="text-muted d-block">Kubernetes EKS deployment</small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <p><strong>Usage:</strong> <code>chmod +x deployment-scripts/*.sh && ./deployment-scripts/app-runner-deploy.sh</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p>&copy; 2024 AWS Deployment Guide for Java 21 Modernization</p>
+            <p><small>All prices are estimates for US East (N. Virginia) region. Use <a href="https://calculator.aws" class="text-warning">AWS Pricing Calculator</a> for accurate estimates.</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Modernization Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #232f3e;
+        }
+        .aws-orange {
+            color: #ff9900;
+        }
+        .metrics {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 22%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .metric-card h3 {
+            margin-top: 0;
+            color: #232f3e;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff9900;
+        }
+        .features {
+            margin-top: 30px;
+        }
+        .feature-comparison {
+            display: flex;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .feature-old, .feature-new {
+            padding: 15px;
+            width: 50%;
+        }
+        .feature-old {
+            background-color: #f8f8f8;
+            border-right: 1px solid #ddd;
+        }
+        .feature-new {
+            background-color: #f0f7ff;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 0;
+        }
+        .progress-section {
+            margin-top: 30px;
+        }
+        .progress-bar {
+            height: 25px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #ff9900;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Java Modernization Dashboard with <span class="aws-orange">Amazon Q Developer</span></h1>
+            <p>Tracking the transformation from Java 8 to Java 17</p>
+        </header>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <h3>Files Transformed</h3>
+                <div class="metric-value">5</div>
+                <p>Total Java files modernized</p>
+            </div>
+            <div class="metric-card">
+                <h3>Lines Changed</h3>
+                <div class="metric-value">127</div>
+                <p>Lines of code modified</p>
+            </div>
+            <div class="metric-card">
+                <h3>Features Updated</h3>
+                <div class="metric-value">8</div>
+                <p>Java 8 features modernized</p>
+            </div>
+            <div class="metric-card">
+                <h3>Code Reduction</h3>
+                <div class="metric-value">12%</div>
+                <p>Reduction in code size</p>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <h2>Transformation Progress</h2>
+            <h3>Overall Completion</h3>
+            <div class="progress-bar">
+                <div class="progress" style="width: 85%">85%</div>
+            </div>
+            
+            <h3>Feature Adoption</h3>
+            <p>Lambda Expressions</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%">100%</div>
+            </div>
+            
+            <p>Stream API</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 90%">90%</div>
+            </div>
+            
+            <p>Records</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 75%">75%</div>
+            </div>
+            
+            <p>Pattern Matching</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 60%">60%</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Feature Transformations</h2>
+            
+            <div class="feature-comparison">
+                <div class="feature-old">
+                    <h3>Java 8: Anonymous Inner Class</h3>
+                    <pre>
+Collections.sort(products, new Comparator&lt;Product&gt;() {
+    @Override
+    public int compare(Product p1, Product p2) {
+        return p1.getPrice().compareTo(p2.getPrice());
+    }
+});
+                    </pre>
+                </div>
+                <div class="feature-new">
+                    <h3>Java 17: Lambda Expression</h3>
+                    <pre>
+products.sort((p1, p2) -> 
+    p1.getPrice().compareTo(p2.getPrice()));
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="feature-comparison">
+                <div class="feature-old">
+                    <h3>Java 8: For Loop</h3>
+                    <pre>
+List&lt;Product&gt; availableProducts = new ArrayList&lt;&gt;();
+for (Product product : allProducts) {
+    if (product.getAvailable()) {
+        availableProducts.add(product);
+    }
+}
+return availableProducts;
+                    </pre>
+                </div>
+                <div class="feature-new">
+                    <h3>Java 17: Stream API</h3>
+                    <pre>
+return allProducts.stream()
+    .filter(Product::getAvailable)
+    .collect(Collectors.toList());
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="feature-comparison">
+                <div class="feature-old">
+                    <h3>Java 8: Traditional Exception Handling</h3>
+                    <pre>
+try {
+    List&lt;Product&gt; products = productRepository.findAll();
+    for (Product product : products) {
+        total += product.getPrice();
+    }
+    return total;
+} catch (Exception e) {
+    System.out.println("Error: " + e.getMessage());
+    return 0.0;
+}
+                    </pre>
+                </div>
+                <div class="feature-new">
+                    <h3>Java 17: Modern Exception Handling</h3>
+                    <pre>
+try {
+    return productRepository.findAll().stream()
+        .mapToDouble(Product::getPrice)
+        .sum();
+} catch (Exception e) {
+    logger.error("Error calculating value", e);
+    return 0.0;
+}
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="feature-comparison">
+                <div class="feature-old">
+                    <h3>Java 8: JPA Annotations</h3>
+                    <pre>
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+}
+                    </pre>
+                </div>
+                <div class="feature-new">
+                    <h3>Java 17: Jakarta Persistence</h3>
+                    <pre>
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+}
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

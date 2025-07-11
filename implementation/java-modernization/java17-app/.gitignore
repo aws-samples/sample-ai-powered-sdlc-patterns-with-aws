@@ -1,0 +1,32 @@
+# Build artifacts
+target/
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+nohup.out
+
+# Temporary files
+*.tmp
+*.temp
+
+# Grype scan results (temporary)
+*grype*.txt
+*grype*.json
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven wrapper jar (will be downloaded)
+.mvn/wrapper/maven-wrapper.jar

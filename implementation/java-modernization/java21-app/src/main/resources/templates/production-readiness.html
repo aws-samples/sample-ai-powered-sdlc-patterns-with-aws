@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Readiness - Java 21 Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .header {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .aws-orange {
+            color: #ff9900;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .enhancement-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        .enhancement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .priority-badge {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .priority-high { 
+            background: #dc3545; 
+            color: white; 
+        }
+        .priority-medium { 
+            background: #ffc107; 
+            color: #000; 
+        }
+        .priority-low { 
+            background: #28a745; 
+            color: white; 
+        }
+        .enhancement-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ff9900;
+        }
+        .requirement-list {
+            list-style: none;
+            padding: 0;
+        }
+        .requirement-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .requirement-list li:last-child {
+            border-bottom: none;
+        }
+        .requirement-list li::before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .phase-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .phase-timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #ff9900, #232f3e);
+        }
+        .phase-item {
+            position: relative;
+            margin: 30px 0;
+            padding-left: 80px;
+        }
+        .phase-item::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background: #ff9900;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #ff9900;
+        }
+        .checklist-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+        }
+        .checklist-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .deployment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .deployment-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .deployment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #ff9900;
+        }
+        .deployment-icon {
+            font-size: 3rem;
+            color: #ff9900;
+            margin-bottom: 15px;
+        }
+        .stats-overview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        .footer {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+        .nav-link.active {
+            background-color: #ff9900 !important;
+            color: white !important;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .progress-indicator {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1><i class="fas fa-cogs"></i> Production Readiness <span class="aws-orange">Guide</span></h1>
+            <p>Comprehensive guide to make your Java 21 application production-ready</p>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid justify-content-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/testing-report">Testing Report</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/migration-design">Migration Design</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/deployment-options">AWS Deployment Options</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/production-readiness">Production Readiness</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Production Readiness Overview -->
+        <div class="row">
+            <div class="col-12">
+                <div class="stats-overview">
+                    <div class="row">
+                        <div class="col-md-3 stat-item">
+                            <span class="stat-number">6</span>
+                            <span>Critical Areas</span>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <span class="stat-number">4</span>
+                            <span>Implementation Phases</span>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <span class="stat-number">20+</span>
+                            <span>Enhancement Items</span>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <span class="stat-number">4</span>
+                            <span>Weeks Timeline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Status Alert -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Current Application Status</h5>
+                    <p><strong>Development Ready:</strong> Your Java 21 application is excellent for development and demonstrations.</p>
+                    <p><strong>Production Gap:</strong> Several critical enhancements are needed before deploying to production environments.</p>
+                    <p><strong>Risk Level:</strong> <span class="badge bg-danger">HIGH</span> - Not suitable for production without modifications.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Enhancements -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h3><i class="fas fa-exclamation-circle"></i> Critical Enhancements (High Priority)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 mb-4" th:each="enhancement : ${criticalEnhancements}">
+                                <div class="card enhancement-card">
+                                    <div class="card-body text-center">
+                                        <div class="enhancement-icon">
+                                            <i th:class="${enhancement.icon}"></i>
+                                        </div>
+                                        <h5 th:text="${enhancement.name}"></h5>
+                                        <span th:class="'priority-badge priority-' + ${enhancement.priorityLevel}" 
+                                              th:text="${enhancement.priority}"></span>
+                                        
+                                        <p class="mt-3 text-muted" th:text="${enhancement.description}"></p>
+                                        
+                                        <ul class="requirement-list text-start">
+                                            <li th:each="req : ${enhancement.requirements}" th:text="${req}"></li>
+                                        </ul>
+                                        
+                                        <div class="mt-3">
+                                            <span class="badge bg-info" th:text="'Timeline: ' + ${enhancement.timeline}"></span>
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <small class="text-muted" th:text="${enhancement.importance}"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medium Priority Enhancements -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h3><i class="fas fa-tools"></i> Medium Priority Enhancements</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 mb-4" th:each="enhancement : ${mediumEnhancements}">
+                                <div class="card enhancement-card">
+                                    <div class="card-body text-center">
+                                        <div class="enhancement-icon">
+                                            <i th:class="${enhancement.icon}"></i>
+                                        </div>
+                                        <h5 th:text="${enhancement.name}"></h5>
+                                        <span th:class="'priority-badge priority-' + ${enhancement.priorityLevel}" 
+                                              th:text="${enhancement.priority}"></span>
+                                        
+                                        <p class="mt-3 text-muted" th:text="${enhancement.description}"></p>
+                                        
+                                        <ul class="requirement-list text-start">
+                                            <li th:each="req : ${enhancement.requirements}" th:text="${req}"></li>
+                                        </ul>
+                                        
+                                        <div class="mt-3">
+                                            <span class="badge bg-info" th:text="'Timeline: ' + ${enhancement.timeline}"></span>
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <small class="text-muted" th:text="${enhancement.importance}"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Timeline -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3><i class="fas fa-calendar-alt"></i> Implementation Timeline</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="phase-timeline">
+                            <div class="phase-item" th:each="phase : ${implementationPhases}">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 th:text="${phase.name}"></h5>
+                                        <p class="text-muted" th:text="${phase.description}"></p>
+                                        <div class="mb-3">
+                                            <span class="badge bg-secondary" th:text="${phase.timeline}"></span>
+                                            <span th:class="'badge bg-' + (${phase.priority} == 'high' ? 'danger' : (${phase.priority} == 'medium' ? 'warning' : 'success'))" 
+                                                  th:text="${phase.priority.toUpperCase()}"></span>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item" th:each="task : ${phase.tasks}">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span th:text="${task}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Production Readiness Checklist -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h3><i class="fas fa-clipboard-check"></i> Production Readiness Checklist</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4" th:each="category : ${checklistCategories}">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i th:class="${category.icon}"></i> <span th:text="${category.name}"></span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="checklist-item" th:each="item : ${category.items}">
+                                            <input type="checkbox" id="checklist-item" disabled>
+                                            <label th:text="${item}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Examples -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3><i class="fas fa-code"></i> Implementation Examples</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Production Database Configuration</h5>
+                                <div class="code-block">
+<pre># application-production.properties
+spring.datasource.url=${DATABASE_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=validate
+
+# Connection pooling
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000</pre>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Security Configuration</h5>
+                                <div class="code-block">
+<pre>@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) {
+        return http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/health").permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(Customizer.withDefaults())
+            .headers(headers -> headers
+                .frameOptions().deny()
+                .contentTypeOptions()
+                .httpStrictTransportSecurity()
+            )
+            .build();
+    }
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h5>Docker Production Setup</h5>
+                                <div class="code-block">
+<pre># Multi-stage Dockerfile
+FROM amazoncorretto:21-alpine AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN ./mvnw clean package -DskipTests
+
+FROM amazoncorretto:21-alpine
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+USER appuser
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health
+ENTRYPOINT ["java", "-jar", "app.jar"]</pre>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>JVM Production Tuning</h5>
+                                <div class="code-block">
+<pre># Production JVM settings
+JAVA_OPTS="-Xms2g -Xmx4g \
+  -XX:+UseG1GC \
+  -XX:MaxGCPauseMillis=200 \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:HeapDumpPath=/var/log/heapdump.hprof \
+  -Dspring.profiles.active=production \
+  -Dserver.port=8080"
+
+# Monitoring and observability
+management.endpoints.web.exposure.include=health,metrics,prometheus
+management.endpoint.health.show-details=when-authorized
+management.metrics.export.prometheus.enabled=true</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Options -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h3><i class="fas fa-cloud"></i> Production Deployment Options</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="deployment-grid">
+                            <div class="deployment-card" th:each="option : ${deploymentOptions}">
+                                <div class="deployment-icon">
+                                    <i th:class="${option.icon}"></i>
+                                </div>
+                                <h5 th:text="${option.name}"></h5>
+                                <p class="text-muted" th:text="${option.description}"></p>
+                                <ul class="list-unstyled">
+                                    <li th:each="feature : ${option.features}">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <span th:text="${feature}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Plan -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-lightbulb"></i> Next Steps</h5>
+                    <ol>
+                        <li><strong>Assess Current State:</strong> Review your application against the checklist above</li>
+                        <li><strong>Prioritize Enhancements:</strong> Start with critical items (database, security, configuration)</li>
+                        <li><strong>Plan Implementation:</strong> Follow the 4-week timeline for systematic improvements</li>
+                        <li><strong>Test Thoroughly:</strong> Implement comprehensive testing at each phase</li>
+                        <li><strong>Monitor Progress:</strong> Use the checklist to track completion</li>
+                    </ol>
+                    <p class="mb-0"><strong>Remember:</strong> Production readiness is an ongoing process. Regular reviews and updates are essential for maintaining a robust production environment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p>Production Readiness Guide for Java 21 Modernization</p>
+            <p>Transform your development application into a production-ready enterprise solution</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
