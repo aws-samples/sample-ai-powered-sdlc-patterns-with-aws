@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 8 Code Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <style>
+        .code-block {
+            background-color: #282c34;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #abb2bf;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+        .feature-card {
+            height: 100%;
+        }
+        .feature-card .card-header {
+            font-weight: bold;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            border-bottom: 2px solid #ff9900;
+        }
+        .comparison-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .comparison-before, .comparison-after {
+            flex: 1;
+            padding: 15px;
+        }
+        .comparison-before {
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+        .comparison-after {
+            background-color: #f0f7ff;
+        }
+        .badge-java8 {
+            background-color: #007bff;
+        }
+        .badge-java17 {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1>Java 8 Code <span class="aws-orange">Analysis</span></h1>
+            <p>Understanding the structure and modernization opportunities</p>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid justify-content-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/code-analysis">Code Analysis</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/requirements">Requirements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/system-behavior">System Behavior</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/h2-console" target="_blank">Database Console</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mb-5">
+        <div class="mb-4">
+            <a href="/" class="btn btn-outline-primary">&larr; Back to Home</a>
+        </div>
+
+        <ul class="nav nav-tabs" id="codeAnalysisTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab" aria-controls="features" aria-selected="true">Java 8 Features</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="structure-tab" data-bs-toggle="tab" data-bs-target="#structure" type="button" role="tab" aria-controls="structure" aria-selected="false">Code Structure</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="modernization-tab" data-bs-toggle="tab" data-bs-target="#modernization" type="button" role="tab" aria-controls="modernization" aria-selected="false">Modernization Opportunities</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="comparison-tab" data-bs-toggle="tab" data-bs-target="#comparison" type="button" role="tab" aria-controls="comparison" aria-selected="false">Code Comparison</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="codeAnalysisTabContent">
+            <!-- Java 8 Features Tab -->
+            <div class="tab-pane fade show active" id="features" role="tabpanel" aria-labelledby="features-tab">
+                <h3 class="section-title">Java 8 Features in this Application</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4" th:each="feature : ${java8Features}">
+                        <div class="card feature-card">
+                            <div class="card-header bg-primary text-white">
+                                <span th:text="${feature.key}"></span>
+                            </div>
+                            <div class="card-body">
+                                <p th:text="${feature.value}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-4 mb-3">Anonymous Inner Class Example</h4>
+                <div class="code-block">
+                    <pre><code class="java">// Java 8 style method using anonymous inner class
+public List&lt;Product&gt; getSortedProductsByPrice() {
+    List&lt;Product&gt; products = new ArrayList&lt;&gt;(productRepository.findAll());
+    Collections.sort(products, new Comparator&lt;Product&gt;() {
+        @Override
+        public int compare(Product p1, Product p2) {
+            return p1.getPrice().compareTo(p2.getPrice());
+        }
+    });
+    return products;
+}</code></pre>
+                </div>
+
+                <h4 class="mt-4 mb-3">Traditional For Loop Example</h4>
+                <div class="code-block">
+                    <pre><code class="java">// Method using Java 8 traditional loop
+public List&lt;Product&gt; getAvailableProducts() {
+    List&lt;Product&gt; allProducts = productRepository.findAll();
+    List&lt;Product&gt; availableProducts = new ArrayList&lt;&gt;();
+    
+    for (Product product : allProducts) {
+        if (product.getAvailable()) {
+            availableProducts.add(product);
+        }
+    }
+    
+    return availableProducts;
+}</code></pre>
+                </div>
+
+                <h4 class="mt-4 mb-3">Old Exception Handling Example</h4>
+                <div class="code-block">
+                    <pre><code class="java">// Method using old-style exception handling
+public Double calculateTotalInventoryValue() {
+    Double total = 0.0;
+    try {
+        List&lt;Product&gt; products = productRepository.findAll();
+        for (Product product : products) {
+            total += product.getPrice();
+        }
+        return total;
+    } catch (Exception e) {
+        System.out.println("Error calculating inventory value: " + e.getMessage());
+        return 0.0;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Code Structure Tab -->
+            <div class="tab-pane fade" id="structure" role="tabpanel" aria-labelledby="structure-tab">
+                <h3 class="section-title">Application Code Structure</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4" th:each="structure : ${codeStructure}">
+                        <div class="card feature-card">
+                            <div class="card-header bg-info text-white">
+                                <span th:text="${structure.key}"></span>
+                            </div>
+                            <div class="card-body">
+                                <p th:text="${structure.value}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-4 mb-3">Application Architecture</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h5>Spring Boot MVC Architecture</h5>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-center">
+                                    <div class="p-3 border rounded me-2 bg-light">Client</div>
+                                    <div class="p-2 d-flex align-items-center">→</div>
+                                    <div class="p-3 border rounded me-2 bg-light">Controller</div>
+                                    <div class="p-2 d-flex align-items-center">→</div>
+                                    <div class="p-3 border rounded me-2 bg-light">Service</div>
+                                    <div class="p-2 d-flex align-items-center">→</div>
+                                    <div class="p-3 border rounded bg-light">Repository</div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="p-2 d-flex align-items-center justify-content-center">↑↓</div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <div class="p-3 border rounded bg-light">Database (H2)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5>Package Structure</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>com.example.java8app</strong>
+                                <ul class="list-unstyled ms-3">
+                                    <li>Java8Application.java (Main class)</li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>com.example.java8app.model</strong>
+                                <ul class="list-unstyled ms-3">
+                                    <li>Product.java (Entity class)</li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>com.example.java8app.repository</strong>
+                                <ul class="list-unstyled ms-3">
+                                    <li>ProductRepository.java (JPA Repository)</li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>com.example.java8app.service</strong>
+                                <ul class="list-unstyled ms-3">
+                                    <li>ProductService.java (Business logic)</li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>com.example.java8app.controller</strong>
+                                <ul class="list-unstyled ms-3">
+                                    <li>ProductController.java (REST API)</li>
+                                    <li>HomeController.java (Web UI)</li>
+                                    <li>CodeAnalysisController.java (Analysis page)</li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>com.example.java8app.config</strong>
+                                <ul class="list-unstyled ms-3">
+                                    <li>DataInitializer.java (Sample data)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modernization Opportunities Tab -->
+            <div class="tab-pane fade" id="modernization" role="tabpanel" aria-labelledby="modernization-tab">
+                <h3 class="section-title">Modernization Opportunities with Java 17</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4" th:each="opportunity : ${modernizationOpportunities}">
+                        <div class="card feature-card">
+                            <div class="card-header bg-success text-white">
+                                <span th:text="${opportunity.key}"></span>
+                            </div>
+                            <div class="card-body">
+                                <p th:text="${opportunity.value}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header bg-warning">
+                        <h4 class="card-title">Amazon Q Developer Transformation Process</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3 border rounded bg-light">
+                                    <h5>1. Analysis</h5>
+                                    <p>Amazon Q analyzes Java 8 code to identify modernization opportunities</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3 border rounded bg-light">
+                                    <h5>2. Transformation</h5>
+                                    <p>Code is transformed to use Java 17 features and patterns</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3 border rounded bg-light">
+                                    <h5>3. Validation</h5>
+                                    <p>Transformed code is validated to ensure functionality is preserved</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Comparison Tab -->
+            <div class="tab-pane fade" id="comparison" role="tabpanel" aria-labelledby="comparison-tab">
+                <h3 class="section-title">Java 8 vs Java 17 Code Comparison</h3>
+                
+                <h4 class="mt-4 mb-3">Anonymous Inner Class vs Lambda Expression</h4>
+                <div class="comparison-container">
+                    <div class="comparison-before">
+                        <h5><span class="badge badge-java8">Java 8</span> Anonymous Inner Class</h5>
+                        <div class="code-block">
+                            <pre><code class="java">Collections.sort(products, new Comparator&lt;Product&gt;() {
+    @Override
+    public int compare(Product p1, Product p2) {
+        return p1.getPrice().compareTo(p2.getPrice());
+    }
+});</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-after">
+                        <h5><span class="badge badge-java17">Java 17</span> Lambda Expression</h5>
+                        <div class="code-block">
+                            <pre><code class="java">products.sort((p1, p2) -> 
+    p1.getPrice().compareTo(p2.getPrice()));</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-4 mb-3">Traditional Loop vs Stream API</h4>
+                <div class="comparison-container">
+                    <div class="comparison-before">
+                        <h5><span class="badge badge-java8">Java 8</span> Traditional Loop</h5>
+                        <div class="code-block">
+                            <pre><code class="java">List&lt;Product&gt; availableProducts = new ArrayList&lt;&gt;();
+for (Product product : allProducts) {
+    if (product.getAvailable()) {
+        availableProducts.add(product);
+    }
+}
+return availableProducts;</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-after">
+                        <h5><span class="badge badge-java17">Java 17</span> Stream API</h5>
+                        <div class="code-block">
+                            <pre><code class="java">return allProducts.stream()
+    .filter(Product::getAvailable)
+    .collect(Collectors.toList());</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-4 mb-3">Traditional Exception Handling vs Modern Approach</h4>
+                <div class="comparison-container">
+                    <div class="comparison-before">
+                        <h5><span class="badge badge-java8">Java 8</span> Traditional Exception Handling</h5>
+                        <div class="code-block">
+                            <pre><code class="java">try {
+    List&lt;Product&gt; products = productRepository.findAll();
+    for (Product product : products) {
+        total += product.getPrice();
+    }
+    return total;
+} catch (Exception e) {
+    System.out.println("Error: " + e.getMessage());
+    return 0.0;
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-after">
+                        <h5><span class="badge badge-java17">Java 17</span> Modern Exception Handling</h5>
+                        <div class="code-block">
+                            <pre><code class="java">try {
+    return productRepository.findAll().stream()
+        .mapToDouble(Product::getPrice)
+        .sum();
+} catch (Exception e) {
+    logger.error("Error calculating value", e);
+    return 0.0;
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-4 mb-3">JPA Annotations</h4>
+                <div class="comparison-container">
+                    <div class="comparison-before">
+                        <h5><span class="badge badge-java8">Java 8</span> javax.persistence</h5>
+                        <div class="code-block">
+                            <pre><code class="java">import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-after">
+                        <h5><span class="badge badge-java17">Java 17</span> jakarta.persistence</h5>
+                        <div class="code-block">
+                            <pre><code class="java">import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p>Java 8 Application for Amazon Q Developer Modernization Demo</p>
+            <p>This application demonstrates Java 8 features that can be modernized to Java 17</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        });
+    </script>
+</body>
+</html>

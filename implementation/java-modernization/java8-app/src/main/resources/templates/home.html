@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 8 Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .header {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .aws-orange {
+            color: #ff9900;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            border-bottom: 2px solid #ff9900;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .product-card {
+            transition: transform 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .footer {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1>Java 8 Product Management <span class="aws-orange">Demo</span></h1>
+            <p>A demonstration application for Amazon Q Developer modernization capabilities</p>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid justify-content-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/code-analysis">Code Analysis</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/requirements">Requirements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/system-behavior">System Behavior</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/h2-console" target="_blank">Database Console</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title">All Products</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Created Date</th>
+                                        <th>Available</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${products}">
+                                        <td th:text="${product.id}"></td>
+                                        <td th:text="${product.name}"></td>
+                                        <td th:text="${product.description}"></td>
+                                        <td th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}"></td>
+                                        <td th:text="${#dates.format(product.createdDate, 'yyyy-MM-dd')}"></td>
+                                        <td>
+                                            <span th:if="${product.available}" class="badge bg-success">Yes</span>
+                                            <span th:unless="${product.available}" class="badge bg-danger">No</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/products/delete/' + ${product.id}}" class="btn btn-sm btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h3 class="card-title">Available Products</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item" th:each="product : ${availableProducts}">
+                                        <span th:text="${product.name}"></span>
+                                        <span class="badge bg-primary float-end" th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h3 class="card-title">Products Sorted by Price</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item" th:each="product : ${sortedProducts}">
+                                        <span th:text="${product.name}"></span>
+                                        <span class="badge bg-primary float-end" th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-warning">
+                        <h3 class="card-title">Add New Product</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/products}" method="post" th:object="${newProduct}">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price</label>
+                                <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="available" th:field="*{available}">
+                                <label class="form-check-label" for="available">Available</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Product</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="card-title">Inventory Statistics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Total Products:</span>
+                            <span class="badge bg-primary" th:text="${products.size()}"></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Available Products:</span>
+                            <span class="badge bg-success" th:text="${availableProducts.size()}"></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Total Inventory Value:</span>
+                            <span class="badge bg-warning text-dark" th:text="${'$' + #numbers.formatDecimal(inventoryValue, 1, 2)}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p>Java 8 Application for Amazon Q Developer Modernization Demo</p>
+            <p>This application demonstrates Java 8 features that can be modernized to Java 17</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

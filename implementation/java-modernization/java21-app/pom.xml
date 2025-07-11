@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.11</version>
+        <relativePath/>
+    </parent>
+    <groupId>com.example</groupId>
+    <artifactId>java21-app</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>java21-app</name>
+    <description>Java 21 Application Modernized from Java 8 - Security Hardened</description>
+    
+    <properties>
+        <java.version>19</java.version>
+        <!-- Security-focused dependency versions to address Grype Critical/High vulnerabilities -->
+        <tomcat.version>10.1.42</tomcat.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
+        <spring-framework.version>6.1.21</spring-framework.version>
+        <commons-beanutils.version>1.11.0</commons-beanutils.version>
+        <commons-io.version>2.16.1</commons-io.version>
+        <commons-compress.version>1.27.1</commons-compress.version>
+        <bcprov.version>1.78.1</bcprov.version>
+        <logback.version>1.5.13</logback.version>
+        <h2.version>2.3.232</h2.version>
+        <cucumber.version>7.20.1</cucumber.version>
+        <maven.version>3.9.9</maven.version>
+        <maven-shared-utils.version>3.4.2</maven-shared-utils.version>
+        <jackson.version>2.17.2</jackson.version>
+        <junit.version>5.11.3</junit.version>
+        <spring-boot.version>3.3.11</spring-boot.version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <!-- Force secure versions of transitive dependencies -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.shared</groupId>
+                <artifactId>maven-shared-utils</artifactId>
+                <version>${maven-shared-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>3.9.9</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+    <dependencies>
+        <!-- Core Spring Boot Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- Database Dependencies -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Cucumber BDD Testing Dependencies -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Security-focused explicit dependency overrides -->
+        <!-- Addresses Critical: Apache Tomcat Embed Core vulnerabilities -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        
+        <!-- Addresses High: Spring Framework vulnerabilities -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        
+        <!-- Addresses High: Commons vulnerabilities -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
+        </dependency>
+        
+        <!-- Addresses Medium: Bouncy Castle vulnerabilities -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bcprov.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bcprov.version}</version>
+        </dependency>
+        
+        <!-- Logback managed by Spring Boot - removed explicit versions to avoid compatibility issues -->
+        
+        <!-- Addresses Critical: Maven vulnerabilities -->
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-shared-utils</artifactId>
+            <version>${maven-shared-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>3.9.9</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Jackson security updates -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        
+        <!-- YAML security -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!-- Spring Boot Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-devtools</artifactId>
+                        </exclude>
+                    </excludes>
+                    <jvmArguments>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.io=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                        --add-opens java.rmi/sun.rmi.transport=ALL-UNNAMED
+                    </jvmArguments>
+                </configuration>
+            </plugin>
+            
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>19</source>
+                    <target>19</target>
+                    <!-- Removed enable-preview to avoid compatibility issues -->
+                </configuration>
+            </plugin>
+            
+            <!-- Maven Surefire Plugin for Testing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            
+            <!-- OWASP Dependency Check Plugin -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>10.0.4</version>
+                <configuration>
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <skipProvidedScope>true</skipProvidedScope>
+                    <skipRuntimeScope>false</skipRuntimeScope>
+                    <skipTestScope>true</skipTestScope>
+                    <formats>
+                        <format>HTML</format>
+                        <format>JSON</format>
+                    </formats>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- JaCoCo Plugin for Code Coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Cucumber Reporting Plugin -->
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.8.2</version>
+                <executions>
+                    <execution>
+                        <id>execution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>java21-app</projectName>
+                            <outputDirectory>${project.build.directory}/cucumber-reports</outputDirectory>
+                            <inputDirectory>${project.build.directory}</inputDirectory>
+                            <jsonFiles>
+                                <param>**/cucumber.json</param>
+                            </jsonFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Versions Plugin for Dependency Management -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.17.1</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <!-- Security-focused profiles -->
+    <profiles>
+        <profile>
+            <id>security-scan</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>enforce-security</id>
+            <build>
+                <plugins>
+                    <!-- Maven Enforcer Plugin for Security - Only in specific profile -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-security</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireJavaVersion>
+                                            <version>19</version>
+                                        </requireJavaVersion>
+                                        <bannedDependencies>
+                                            <excludes>
+                                                <!-- Ban vulnerable versions -->
+                                                <exclude>org.apache.tomcat.embed:tomcat-embed-core:(,10.1.42)</exclude>
+                                                <exclude>org.springframework:spring-webmvc:(,6.1.21)</exclude>
+                                                <exclude>commons-beanutils:commons-beanutils:(,1.11.0)</exclude>
+                                                <exclude>commons-io:commons-io:(,2.14.0)</exclude>
+                                                <exclude>org.apache.commons:commons-compress:(,1.26.0)</exclude>
+                                                <exclude>org.apache.maven:maven-core:(,3.8.1)</exclude>
+                                                <exclude>org.apache.maven.shared:maven-shared-utils:(,3.3.3)</exclude>
+                                                <exclude>org.springframework.boot:spring-boot:(,3.3.11)</exclude>
+                                            </excludes>
+                                        </bannedDependencies>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
