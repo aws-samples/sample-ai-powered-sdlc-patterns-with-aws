@@ -1,0 +1,12 @@
+{
+  "name": "icode-full-ui",
+  "version": "1.0.0",
+  "description": "iCode Full Stack Application",
+  "scripts": {
+    "dev": "echo 'Start your frontend and backend servers.'",
+    "build": "echo 'Ready for build.'"
+  },
+  "keywords": ["icode", "fullstack", "react", "python"],
+  "author": "ckavish",
+  "license": "MIT"
+}

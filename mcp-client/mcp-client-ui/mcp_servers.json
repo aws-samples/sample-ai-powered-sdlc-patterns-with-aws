@@ -1,0 +1,284 @@
+{
+  "environments": {
+    "development": {
+      "servers": [
+        {
+          "server_id": "aws-architecture-design",
+          "endpoint_url": "https://your-lambda-url.lambda-url.us-east-1.on.aws/",
+          "capabilities": [
+            "query_aws_knowledge",
+            "generate_architecture_code",
+            "create_architecture_diagram",
+            "analyze_architecture",
+            "estimate_architecture_cost"
+          ],
+          "server_type": "architecture",
+          "timeout_config": {
+            "default_timeout_seconds": 120.0,
+            "operation_timeouts": {
+              "create_architecture_diagram": 300.0,
+              "generate_architecture_code": 180.0,
+              "query_aws_knowledge": 60.0,
+              "analyze_architecture": 120.0
+            },
+            "max_retries": 2,
+            "retry_backoff_factor": 2.0
+          },
+          "metadata": {
+            "description": "AWS Architecture Design MCP Server",
+            "version": "1.0.0"
+          },
+          "auth": {
+            "type": "aws_sigv4",
+            "region": "us-east-1",
+            "service": "lambda"
+          }
+        },
+        {
+          "server_id": "domain-analysis-tools",
+          "endpoint_url": "https://your-domain-analysis-server.amazonaws.com/mcp",
+          "capabilities": [
+            "domain_analysis",
+            "generate_documentation",
+            "generate_openapi_spec"
+          ],
+          "server_type": "tool",
+          "timeout_config": {
+            "default_timeout_seconds": 180.0,
+            "operation_timeouts": {
+              "domain_analysis": 240.0,
+              "generate_documentation": 300.0,
+              "generate_openapi_spec": 240.0
+            },
+            "max_retries": 2,
+            "retry_backoff_factor": 2.0
+          },
+          "metadata": {
+            "description": "Domain Analysis and Documentation Generation MCP Server",
+            "version": "1.0.0"
+          },
+          "auth": {
+            "type": "aws_sigv4",
+            "region": "us-east-1",
+            "service": "execute-api"
+          }
+        },
+        {
+          "server_id": "amazon-q-business",
+          "endpoint_url": "https://your-api-gateway.execute-api.us-east-1.amazonaws.com",
+          "capabilities": [
+            "mcp_amazon_q_business_retrieve",
+            "mcp_amazon_q_business_create"
+          ],
+          "server_type": "tool",
+          "timeout_config": {
+            "default_timeout_seconds": 180.0,
+            "operation_timeouts": {
+              "mcp_amazon_q_business_retrieve": 120.0,
+              "mcp_amazon_q_business_create": 240.0
+            },
+            "max_retries": 2,
+            "retry_backoff_factor": 2.0
+          },
+          "metadata": {
+            "description": "Amazon Q Business MCP Server - Confluence and Knowledge Base Integration",
+            "version": "1.0.0",
+            "features": [
+              "Confluence content retrieval and analysis",
+              "Knowledge base search and extraction",
+              "AI-powered content generation",
+              "Requirements analysis from documentation",
+              "Auto-login to Amazon Q Business"
+            ]
+          },
+          "auth": {
+            "type": "aws_sigv4",
+            "region": "us-east-1",
+            "service": "execute-api"
+          },
+          "priority": {
+            "confluence_queries": 1,
+            "knowledge_retrieval": 1,
+            "content_analysis": 1
+          }
+        }
+      ]
+    },
+    "production": {
+      "servers": [
+        {
+          "server_id": "aws-architecture-design",
+          "endpoint_url": "https://your-prod-lambda-url.lambda-url.us-east-1.on.aws/",
+          "capabilities": [
+            "query_aws_knowledge",
+            "generate_architecture_code",
+            "create_architecture_diagram",
+            "analyze_architecture"
+          ],
+          "server_type": "architecture",
+          "timeout_config": {
+            "default_timeout_seconds": 180.0,
+            "operation_timeouts": {
+              "create_architecture_diagram": 600.0,
+              "generate_architecture_code": 300.0,
+              "query_aws_knowledge": 90.0,
+              "analyze_architecture": 180.0
+            },
+            "max_retries": 3,
+            "retry_backoff_factor": 2.5
+          },
+          "metadata": {
+            "description": "AWS Architecture Design MCP Server - Production",
+            "version": "1.0.0"
+          },
+          "auth": {
+            "type": "aws_sigv4",
+            "region": "us-east-1",
+            "service": "lambda"
+          }
+        },
+        {
+          "server_id": "domain-analysis-tools",
+          "endpoint_url": "https://your-prod-domain-analysis-server.amazonaws.com/mcp",
+          "capabilities": [
+            "domain_analysis",
+            "generate_documentation",
+            "generate_openapi_spec"
+          ],
+          "server_type": "tool",
+          "timeout_config": {
+            "default_timeout_seconds": 240.0,
+            "operation_timeouts": {
+              "domain_analysis": 300.0,
+              "generate_documentation": 360.0,
+              "generate_openapi_spec": 300.0
+            },
+            "max_retries": 3,
+            "retry_backoff_factor": 2.5
+          },
+          "metadata": {
+            "description": "Domain Analysis and Documentation Generation MCP Server - Production",
+            "version": "1.0.0"
+          },
+          "auth": {
+            "type": "aws_sigv4",
+            "region": "us-east-1",
+            "service": "execute-api"
+          }
+        },
+        {
+          "server_id": "amazon-q-business-prod",
+          "endpoint_url": "https://your-prod-api-gateway.execute-api.us-east-1.amazonaws.com",
+          "capabilities": [
+            "mcp_amazon_q_business_retrieve",
+            "mcp_amazon_q_business_create"
+          ],
+          "server_type": "tool",
+          "timeout_config": {
+            "default_timeout_seconds": 240.0,
+            "operation_timeouts": {
+              "mcp_amazon_q_business_retrieve": 180.0,
+              "mcp_amazon_q_business_create": 300.0
+            },
+            "max_retries": 3,
+            "retry_backoff_factor": 2.5
+          },
+          "metadata": {
+            "description": "Amazon Q Business MCP Server - Production - Confluence and Knowledge Base Integration",
+            "version": "1.0.0",
+            "features": [
+              "Confluence content retrieval and analysis",
+              "Knowledge base search and extraction",
+              "AI-powered content generation",
+              "Requirements analysis from documentation",
+              "Auto-login to Amazon Q Business"
+            ]
+          },
+          "auth": {
+            "type": "aws_sigv4",
+            "region": "us-east-1",
+            "service": "execute-api"
+          },
+          "priority": {
+            "confluence_queries": 1,
+            "knowledge_retrieval": 1,
+            "content_analysis": 1
+          }
+        }
+      ]
+    }
+  },
+  "server_templates": {
+    "aws_lambda_server": {
+      "server_type": "architecture",
+      "timeout_config": {
+        "default_timeout_seconds": 120.0,
+        "max_retries": 2,
+        "retry_backoff_factor": 2.0
+      },
+      "auth": {
+        "type": "aws_sigv4",
+        "service": "lambda"
+      }
+    }
+  },
+  "code_generation": {
+    "enabled": true,
+    "auto_generate_after_diagram": true,
+    "default_settings": {
+      "target_platform": "aws",
+      "code_type": "cloudformation",
+      "include_documentation": true,
+      "include_tests": false,
+      "fallback_enabled": true
+    },
+    "aws_settings": {
+      "supported_code_types": [
+        "cloudformation",
+        "terraform"
+      ],
+      "default_code_type": "cloudformation",
+      "regions": [
+        "us-east-1",
+        "us-west-2",
+        "eu-west-1"
+      ],
+      "default_region": "us-east-1",
+      "resource_naming": {
+        "use_project_prefix": true,
+        "environment_suffix": true,
+        "include_timestamp": false
+      },
+      "cloudformation": {
+        "template_version": "2010-09-09",
+        "include_outputs": true,
+        "include_parameters": true,
+        "parameter_defaults": {
+          "Environment": "dev",
+          "ProjectName": "generated-architecture"
+        }
+      },
+      "terraform": {
+        "provider_version": "~> 5.0",
+        "required_version": ">= 1.0",
+        "include_variables": true,
+        "include_outputs": true,
+        "variable_defaults": {
+          "aws_region": "us-east-1",
+          "environment": "dev"
+        }
+      }
+    },
+    "file_organization": {
+      "create_project_structure": true,
+      "include_readme": true,
+      "include_deployment_scripts": false,
+      "group_by_service": true
+    },
+    "validation": {
+      "validate_syntax": true,
+      "check_aws_limits": false,
+      "estimate_costs": false
+    }
+  }
+}

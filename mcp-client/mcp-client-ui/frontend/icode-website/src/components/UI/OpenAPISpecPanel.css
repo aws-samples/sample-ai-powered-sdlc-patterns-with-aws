@@ -1,0 +1,203 @@
+.openapi-spec-panel {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin: 16px 0;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.openapi-spec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.openapi-spec-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.spec-count {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.openapi-spec-list {
+  padding: 0;
+}
+
+.openapi-spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  background: white;
+  transition: background-color 0.2s ease;
+}
+
+.openapi-spec-item:hover {
+  background: #f8f9fa;
+}
+
+.openapi-spec-item:last-child {
+  border-bottom: none;
+}
+
+.spec-info {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.spec-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.spec-icon {
+  font-size: 16px;
+}
+
+.spec-title strong {
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.spec-version {
+  background: #28a745;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.spec-details {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.spec-format {
+  background: #6c757d;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.spec-timestamp {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.spec-description {
+  color: #495057;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+.spec-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.view-swagger-btn,
+.download-spec-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.view-swagger-btn {
+  background: #007bff;
+  color: white;
+}
+
+.view-swagger-btn:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.download-spec-btn {
+  background: #28a745;
+  color: white;
+}
+
+.download-spec-btn:hover {
+  background: #1e7e34;
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  font-size: 14px;
+}
+
+.openapi-spec-footer {
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.spec-help-text {
+  margin: 0;
+  color: #6c757d;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .openapi-spec-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .spec-info {
+    margin-right: 0;
+  }
+  
+  .spec-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .view-swagger-btn,
+  .download-spec-btn {
+    flex: 1;
+  }
+  
+  .spec-details {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

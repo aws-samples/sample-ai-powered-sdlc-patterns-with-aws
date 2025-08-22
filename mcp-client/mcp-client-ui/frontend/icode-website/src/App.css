@@ -1,0 +1,70 @@
+/* App styles - minimal since we're using Cloudscape components */
+.App {
+  min-height: 100vh;
+}
+
+/* Allow full width for better space utilization */
+[data-awsui-component-name="container"],
+[data-awsui-component-name="grid"],
+[data-awsui-component-name="box"] {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 1rem !important;
+}
+
+/* Ultra-aggressive full-width overrides for CloudScape */
+* {
+  box-sizing: border-box;
+}
+
+/* Target all possible CloudScape layout containers */
+[data-awsui-component-name="app-layout"],
+[data-awsui-component-name="app-layout"] *,
+.awsui-app-layout,
+.awsui-app-layout *,
+.awsui-app-layout-content,
+.awsui-app-layout-main,
+.awsui-app-layout-content-wrapper,
+.awsui-app-layout-container {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Override any max-width constraints */
+.awsui-app-layout-content {
+  max-width: 100vw !important;
+  width: 100vw !important;
+  padding: 1rem !important;
+}
+
+/* Force viewport width usage */
+body, html, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  overflow-x: hidden;
+}
+
+/* Target specific CloudScape internal classes */
+.awsui_content_1id4u_1ub9m_93,
+.awsui_layout_1id4u_1ub9m_113,
+.awsui_content-wrapper_1id4u_1ub9m_125 {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+}
+
+/* Custom styles can be added here as needed */
+
+/* FeatureCard hover effects */
+.feature-card-hover {
+  transition: transform 0.2s ease-in-out;
+}
+
+.feature-card-hover:hover {
+  transform: translateY(-2px);
+}

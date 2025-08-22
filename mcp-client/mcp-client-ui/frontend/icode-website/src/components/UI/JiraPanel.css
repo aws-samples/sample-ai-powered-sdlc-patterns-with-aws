@@ -1,0 +1,77 @@
+/* Jira Panel - Clean Modern Design */
+
+.jira-panel-container {
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.jira-panel-header {
+    background: #ffffff;
+    color: white;
+    padding: 16px 20px;
+    border-bottom: none;
+}
+
+.jira-panel-tabs {
+    background: #f7f8f9;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.jira-tab-content {
+    background: #ffffff;
+    padding: 20px;
+    min-height: 300px;
+}
+
+.jira-panel-single {
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.jira-error-alert {
+    background: #ffebee;
+    border: 1px solid #f44336;
+    border-radius: 4px;
+    padding: 16px;
+    margin: 16px;
+}
+
+/* Animation for panel appearance */
+@keyframes jira-panel-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.jira-panel-container,
+.jira-panel-single {
+    animation: jira-panel-fade-in 0.4s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .jira-panel-container {
+        margin: 8px;
+        border-radius: 12px;
+    }
+
+    .jira-panel-header {
+        padding: 16px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .jira-tab-content {
+        border-radius: 0 0 12px 12px;
+    }
+}

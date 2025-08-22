@@ -1,0 +1,125 @@
+{
+    "siteName": "AWS Gen AI for Software Development",
+    "siteTagline": "Innovation in Software Development with AWS Generative AI",
+    "navigation": {
+        "items": [
+            {
+                "id": "home",
+                "text": "Home",
+                "href": "/"
+            },
+            {
+                "id": "projects",
+                "text": "Projects",
+                "href": "/projects"
+            },
+
+            {
+                "id": "about",
+                "text": "About",
+                "href": "/about"
+            },
+            {
+                "id": "services",
+                "text": "Services",
+                "href": "/services"
+            },
+            {
+                "id": "contact",
+                "text": "Contact",
+                "href": "/contact"
+            }
+        ]
+    },
+    "footer": {
+        "links": [
+            {
+                "id": "privacy",
+                "text": "Privacy Policy",
+                "href": "/privacy",
+                "external": false
+            },
+            {
+                "id": "terms",
+                "text": "Terms of Service",
+                "href": "/terms",
+                "external": false
+            },
+            {
+                "id": "support",
+                "text": "Support",
+                "href": "/support",
+                "external": false
+            }
+        ]
+    },
+    "homePage": {
+        "hero": {
+            "title": "AI-Powered Software Development using AWS generative AI",
+            "subtitle": "Championing Development Excellence with AI-Powered Solutions",
+            "actions": [
+                {
+                    "id": "learn-more",
+                    "text": "Learn More",
+                    "variant": "primary",
+                    "href": "/about"
+                }
+            ]
+        },
+        "features": [
+            {
+                "id": "sdlc-acceleration",
+                "title": "End-to-End SDLC Acceleration",
+                "description": "Accelerate innovation cycles through AI-assisted development, reducing time-to-market by automating routine tasks while enabling developers to focus on strategic, high-value creative work.",
+                "icon": "⚡"
+            },
+            {
+                "id": "sdlc-quality",
+                "title": "Quality and Reliability",
+                "description": "Enhance software quality and reliability by leveraging AI for automated testing, real-time code analysis, predictive issue detection, and continuous security vulnerability monitoring.",
+                "icon": "💯"
+            },
+            {
+                "id": "developer-experience",
+                "title": "Boost team productivity",
+                "description": "Boost team productivity and satisfaction with AI-powered collaboration tools, knowledge management, and contextual assistance that democratizes expertise across your entire development organization.",
+                "icon": "🏆"
+            }
+        ]
+    },
+    "howItWorks": {
+        "title": "How the Platform Works",
+        "description": "Accelerating development through AWS generative AI solutions and enterprise tool integration",
+        "personas": [
+            {
+                "id": "developer",
+                "title": "Developer",
+                "description": "Drives application modernization through systematic code migration from Java 8 through 21, optimizing performance with new language features like virtual threads and pattern matching, while maintaining robust testing and deployment practices"
+            },
+            {
+                "id": "project-manager",
+                "title": "Project Manager",
+                "description": "Translates business requirements into well-structured epics and user stories, breaking down complex initiatives into manageable development tasks while ensuring alignment with project goals"
+            },
+            {
+                "id": "solutions-architect",
+                "title": "Solutions Architect",
+                "description": "Comprehensive solutions through infrastructure-as-code implementations, optimizing costs while maintaining detailed technical documentation that bridges business needs with architectural decisions and best practices"
+            },
+            {
+                "id": "business-analyst",
+                "title": "Business Analyst",
+                "description": "Translates customer voices into actionable strategies by mapping feedback to both immediate fixes and long-term improvements, prioritizing solutions based on customer value and implementation complexity to maximize business impact"
+            },
+            {
+                "id": "ops-engineer",
+                "title": "Ops Engineer",
+                "description": "Drives continuous improvement by implementing validated solutions, automating fixes, and maintaining a comprehensive knowledge base to enhance system reliability and reduce incident recurrence"
+            }
+        ]
+    },
+    "aboutPage": {
+        "title": "About the Platform",
+        "content": "We champion software development excellence by harnessing the power of Generative AI across your entire development lifecycle. Our platform seamlessly integrates with your enterprise tools and systems, empowering teams to accelerate innovation and transform ideas into solutions with unprecedented speed. We're obsessed with developer success, delivering intelligent automation and workflow optimization that helps teams build better software faster while maintaining operational excellence."
+    }
+}

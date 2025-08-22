@@ -1,0 +1,63 @@
+# Multi-stage Dockerfile for Full-stack iCode Application
+# Stage 1: Build React Frontend
+FROM node:18-alpine as frontend-builder
+
+WORKDIR /frontend
+COPY ./frontend/icode-website/package*.json ./
+RUN npm ci --legacy-peer-deps
+
+COPY ./frontend/icode-website/ ./
+RUN npm run build
+
+# Stage 2: Python Backend with Frontend
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies including Node.js for npx/mcp-remote
+RUN apt-get update && apt-get install -y \
+    gcc \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy backend requirements and install Python dependencies
+COPY ./backend/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend application code
+COPY ./backend/ ./
+
+# Copy MCP servers configuration
+COPY ./mcp_servers.json ./
+COPY ./mcp_servers.json ../mcp_servers.json
+
+# Copy built frontend from previous stage
+COPY --from=frontend-builder /frontend/build ./frontend_build
+
+# Create static directory and copy files correctly
+RUN mkdir -p ./static && \
+    cp -r ./frontend_build/static/* ./static/ && \
+    cp ./frontend_build/*.html ./static/ && \
+    cp ./frontend_build/*.json ./static/ && \
+    cp ./frontend_build/*.ico ./static/ && \
+    cp ./frontend_build/*.txt ./static/ 2>/dev/null || true
+
+# Debug: List contents to verify files are copied
+RUN ls -la ./static/ && ls -la ./static/css/ && ls -la ./static/js/
+
+# Create non-root user for security
+RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
+USER app
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the application with increased timeouts for long-running operations
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-keep-alive", "300", "--timeout-graceful-shutdown", "30"]

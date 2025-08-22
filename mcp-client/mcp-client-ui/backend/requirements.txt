@@ -1,0 +1,35 @@
+# Core MCP Client Dependencies
+mcp>=1.10.0
+pydantic>=2.0.0
+httpx>=0.24.0
+aiohttp>=3.8.0
+async-timeout>=4.0.0
+boto3>=1.28.0
+botocore>=1.31.0
+tenacity>=8.2.0
+structlog>=23.1.0
+
+# OpenTelemetry for monitoring and tracing
+opentelemetry-api>=1.18.0
+opentelemetry-sdk>=1.18.0
+opentelemetry-exporter-otlp>=1.18.0
+
+# Web server dependencies for examples
+fastapi>=0.100.0
+uvicorn>=0.23.0
+
+# System monitoring
+psutil>=5.9.0
+
+# Additional utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Using Bedrock KB for knowledge base functionality
+
+# JWT and authentication
+PyJWT>=2.8.0
+cryptography>=41.0.0
+
+# PDF generation
+reportlab>=4.0.0
