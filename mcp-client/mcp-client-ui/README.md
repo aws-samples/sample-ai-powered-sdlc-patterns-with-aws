@@ -1,8 +1,10 @@
 # AI-Powered Software Development using AWS generative AI
 
+## Introduction
+
 A comprehensive AI-powered development platform with secure infrastructure, conversation management, and enterprise integrations built on AWS.
 
-## Overview
+### Overview
 
 This solution provides a complete full-stack application that combines:
 - **Frontend**: React.js application with modern UI components
@@ -12,7 +14,7 @@ This solution provides a complete full-stack application that combines:
 - **Authentication**: AWS Cognito with role-based access
 - **Storage**: S3 with encryption and versioning
 
-## Architecture
+## Solution Architecture (with steps explanation)
 
 ![Platform Architecture](icode-architecture.png)
 
@@ -75,7 +77,7 @@ aws bedrock list-foundation-models --region us-east-1 --query 'modelSummaries[?c
 aws bedrock list-inference-profiles --region us-east-1 --query 'inferenceProfileSummaries[?contains(inferenceProfileId, `claude`)].inferenceProfileId'
 ```
 
-## Deployment
+## Deployment instructions
 
 ### Quick Start
 
@@ -227,7 +229,7 @@ To add MCP (Model Context Protocol) servers for enhanced capabilities:
 
    **Important**: Update the placeholder URLs in `mcp_servers.json` with your actual MCP server endpoints before deployment. The sample URLs are provided as templates and will not work without your actual AWS resources.
 
-## Configuration
+### Configuration
 
 ### Environment Variables
 
@@ -266,7 +268,7 @@ aws cloudformation describe-stacks --stack-name ICodeStack --query 'Stacks[0].Ou
 ./configure-kb.sh <KNOWLEDGE_BASE_ID> <DATA_SOURCE_ID>
 ```
 
-## Security Features
+### Security Features
 
 - **Network isolation** with VPC and private subnets
 - **IP-restricted** Application Load Balancer
@@ -277,41 +279,12 @@ aws cloudformation describe-stacks --stack-name ICodeStack --query 'Stacks[0].Ou
 
 See CONTRIBUTING for more information.
 
-## Monitoring
+## Test
 
 - **Application health**: `https://your-alb-dns/health`
 - **Logs**: CloudWatch `/ecs/icode-fullstack`
 - **Audit trail**: CloudWatch `/aws/cloudtrail/icode-audit`
 - **VPC flow logs**: CloudWatch `/aws/vpc/flowlogs`
-
-## Troubleshooting
-
-### Common Issues
-
-**Bedrock access denied:**
-```bash
-# Enable models in Bedrock console
-# Verify model ID matches enabled models
-aws bedrock list-foundation-models --region us-east-1
-```
-
-**Deployment fails:**
-```bash
-# Check IP address format
-export ALLOWED_IP_ADDRESS="$(curl -s http://httpbin.org/ip | jq -r '.origin')/32"
-
-# Verify AWS credentials
-aws sts get-caller-identity
-```
-
-**ECS tasks not starting:**
-```bash
-# Check service status
-aws ecs describe-services --cluster icode-cluster --services icode-fullstack-service
-
-# View logs
-aws logs tail /ecs/icode-fullstack --follow
-```
 
 ## Cleanup
 
@@ -325,7 +298,7 @@ npx cdk destroy --force
 aws ecr delete-repository --repository-name icode-fullstack --force
 ```
 
-## Local Development
+### Local Development
 
 ```bash
 # Backend
@@ -341,22 +314,19 @@ npm install
 npm start
 ```
 
-## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## 🔐 Security
 
-## License
+See CONTRIBUTING for more information
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+## 📄 License
+
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
 
 ## Disclaimer
 
-The solution architecture sample code is provided without any guarantees, and you're not recommended to use it for production-grade workloads. The intention is to provide content to build and learn. Be sure of reading the licensing terms.
+The solution architecture sample code is provided without any guarantees, and you're not recommended to use it for production-grade workloads. The intention is to provide content to build and learn. Be sure of reading the licensing terms."
 
 ---
 
-**Security Note**: Always restrict `ALLOWED_IP_ADDRESS` to your specific IP or network range. Never use `0.0.0.0/0` in production.
+Built with ❤️ using the AWS, MCP, Amazon Bedrock, and AI-powered SDLC.
