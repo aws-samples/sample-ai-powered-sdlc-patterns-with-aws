@@ -12,7 +12,7 @@ slowapi==0.1.9
 redis==5.0.1
 
 # HTTP client for webhooks
-aiohttp==3.9.1
+aiohttp==3.12.14
 
 # Data validation and serialization
 pydantic==2.5.0
