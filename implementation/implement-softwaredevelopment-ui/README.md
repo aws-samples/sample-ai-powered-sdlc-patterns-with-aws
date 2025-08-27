@@ -91,7 +91,6 @@ aws bedrock list-inference-profiles --region us-east-1 --query 'inferenceProfile
 ```bash
 # Clone and navigate to repository
 git clone <repository-url>
-cd mcp-client-ui
 
 # Configure AWS credentials
 aws configure
