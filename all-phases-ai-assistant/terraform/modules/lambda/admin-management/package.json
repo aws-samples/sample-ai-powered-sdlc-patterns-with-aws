@@ -1,0 +1,46 @@
+{
+  "name": "admin-management-lambda",
+  "version": "1.0.0",
+  "description": "Admin management Lambda function for Knowledge Base administration",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "clean": "rm -rf dist",
+    "package": "npm run clean && npm run build && zip -r function.zip dist/ node_modules/ package.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-agent": "^3.645.0",
+    "@aws-sdk/client-cloudwatch": "^3.645.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.645.0",
+    "@aws-sdk/client-dynamodb": "^3.645.0",
+    "@aws-sdk/lib-dynamodb": "^3.645.0",
+    "aws-sdk": "^2.1691.0",
+    "zod": "^4.0.17"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.9",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.5",
+    "typescript": "^5.5.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.test.ts",
+      "!src/**/*.spec.ts"
+    ]
+  }
+}

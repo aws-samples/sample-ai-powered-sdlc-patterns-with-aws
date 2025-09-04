@@ -1,0 +1,37 @@
+{
+  "name": "document-management-lambda",
+  "version": "1.0.0",
+  "description": "Document Management Lambda Function for AI Assistant",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "package": "npm run build && zip -r function.zip dist/ node_modules/",
+    "clean": "rm -rf dist/ function.zip"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-agent": "^3.645.0",
+    "@aws-sdk/client-dynamodb": "^3.645.0",
+    "@aws-sdk/client-s3": "^3.645.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.143",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.15",
+    "@types/uuid": "^9.0.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.4",
+    "typescript": "^5.5.4"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/__tests__/**/*.test.ts"],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
+  }
+}

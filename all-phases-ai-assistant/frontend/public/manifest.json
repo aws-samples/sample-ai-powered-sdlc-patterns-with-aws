@@ -1,0 +1,89 @@
+{
+  "short_name": "AI Assistant",
+  "name": "AI Assistant - Development Team Knowledge Base",
+  "description": "AI-powered software development assistant for your team's knowledge base",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0066cc",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["productivity", "developer", "business"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "New Chat",
+      "short_name": "Chat",
+      "description": "Start a new conversation with the AI assistant",
+      "url": "/chat/new",
+      "icons": [
+        {
+          "src": "icons/chat-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Upload Documents",
+      "short_name": "Upload",
+      "description": "Upload new documents to the knowledge base",
+      "url": "/documents/upload",
+      "icons": [
+        {
+          "src": "icons/upload-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "View Documents",
+      "short_name": "Documents",
+      "description": "Browse and manage documents",
+      "url": "/documents",
+      "icons": [
+        {
+          "src": "icons/documents-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/desktop-chat.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Chat interface on desktop"
+    },
+    {
+      "src": "screenshots/mobile-chat.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Chat interface on mobile"
+    }
+  ]
+}

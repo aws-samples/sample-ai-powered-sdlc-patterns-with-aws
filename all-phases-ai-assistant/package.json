@@ -1,0 +1,32 @@
+{
+  "name": "ai-assistant-knowledge-base-tests",
+  "version": "1.0.0",
+  "description": "Knowledge Base Integration Tests using Playwright MCP against deployed AWS infrastructure",
+  "scripts": {
+    "test": "jest --testPathPattern=playwright --verbose --runInBand",
+    "test:knowledge-base": "jest --testPathPattern=knowledge-base-integration.playwright.test.ts --verbose --runInBand",
+    "test:e2e": "npx ts-node __tests__/run-e2e-tests.ts",
+    "test:e2e:comprehensive": "npx ts-node -e \"import('./comprehensive-e2e-tests.playwright.test').then(m => m.runComprehensiveE2ETests())\"",
+    "test:e2e:auth": "npx ts-node -e \"import('./authentication-e2e.playwright.test').then(m => m.runAuthenticationE2ETests())\"",
+    "test:e2e:performance": "npx ts-node -e \"import('./performance-e2e.playwright.test').then(m => m.runPerformanceE2ETests())\"",
+    "test:admin": "npx ts-node __tests__/run-admin-tests.ts",
+    "test:admin:dashboard": "npx ts-node -e \"import('./__tests__/admin-dashboard-e2e.playwright.mcp.test').then(m => m.runAdminDashboardE2ETests())\"",
+    "test:admin:features": "npx ts-node -e \"import('./__tests__/admin-features-e2e.playwright.mcp.test').then(m => m.runAdminFeaturesE2ETests())\"",
+    "test:admin:comprehensive": "npx ts-node -e \"import('./__tests__/admin-comprehensive-e2e.playwright.mcp.test').then(m => m.runComprehensiveAdminE2ETests())\""
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.19.11",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.4",
+    "typescript": "^5.5.4"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.playwright.test.ts"
+    ],
+    "testTimeout": 180000
+  }
+}
