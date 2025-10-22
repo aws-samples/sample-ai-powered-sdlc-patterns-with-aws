@@ -10,7 +10,7 @@ This AI-powered assistant streamlines development and deployment workflows by le
 
 Watch the DevOps AI Assistant in action:
 
-https://github.com/pmvrak/sample-ai-powered-sdlc-patterns-with-aws/raw/main/deployment/deploy-devops-ai-assistant/demo/demo-devops-ai-assistant.mp4
+https://github.com/pmvrak/sample-ai-powered-sdlc-patterns-with-aws/raw/main/deployment/deploy-devops-ai-assistant/demo/demo-devops-ai-assistant-video.mp4
 
 *The demo showcases the complete workflow from Git repository input to generated infrastructure code and Docker containers.*
 
