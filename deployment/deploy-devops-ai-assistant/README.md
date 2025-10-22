@@ -10,10 +10,7 @@ This AI-powered assistant streamlines development and deployment workflows by le
 
 Watch the DevOps AI Assistant in action:
 
-<video width="800" controls>
-  <source src="demo/demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Demo](./demo/demo2.gif)
 
 ## Solution Architecture
 
