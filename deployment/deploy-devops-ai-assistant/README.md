@@ -6,6 +6,14 @@ The DevOps AI Assistant is a comprehensive tool that automates various aspects o
 
 This AI-powered assistant streamlines development and deployment workflows by leveraging advanced code generation techniques. It supports multiple container orchestration platforms and aims to minimize manual coding, reduce errors, and enhance the overall efficiency of DevOps practices.
 
+## Demo
+
+Watch the DevOps AI Assistant in action:
+
+https://github.com/pmvrak/sample-ai-powered-sdlc-patterns-with-aws/raw/main/deployment/deploy-devops-ai-assistant/demo/demo-devops-ai-assistant.mp4
+
+*The demo showcases the complete workflow from Git repository input to generated infrastructure code and Docker containers.*
+
 ## Solution Architecture
 
 The DevOps AI Assistant follows a modular architecture with AI-powered code generation at its core:
@@ -342,11 +350,6 @@ Key components in the data flow:
 - **Streamlit UI**: Manages user interactions and displays results
 - **Finch**: Builds and tests generated Dockerfiles
 - **AWS services**: Interact with ECR, ECS, EKS, and other AWS resources as needed
-
-
-## Demo of the Solution
-
-[![Demo](sample-ai-powered-sdlc-patterns-with-aws/deployment/deploy-devops-ai-assistant/demo/demo-devops-ai-assistant2.mov)
 
 ## Disclaimer
 
