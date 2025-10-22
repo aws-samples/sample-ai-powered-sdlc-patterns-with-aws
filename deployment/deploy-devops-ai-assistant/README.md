@@ -351,6 +351,14 @@ Key components in the data flow:
 - **Finch**: Builds and tests generated Dockerfiles
 - **AWS services**: Interact with ECR, ECS, EKS, and other AWS resources as needed
 
+<<<<<<< HEAD
+=======
+
+## Demo of the Solution
+
+[Demo](sample-ai-powered-sdlc-patterns-with-aws/deployment/deploy-devops-ai-assistant/demo/demo-devops-ai-assistant.mov)
+
+>>>>>>> b00e049513f88fe7bb9c3e637265efe069095bd6
 ## Disclaimer
 
 The solution architecture sample code is provided without any guarantees, and you're not recommended to use it for production-grade workloads. The intention is to provide content to build and learn. Be sure of reading the licensing terms.
