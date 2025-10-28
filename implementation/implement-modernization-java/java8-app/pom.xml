@@ -16,7 +16,7 @@
     
     <properties>
         <java.version>1.8</java.version>
-        <tomcat.version>9.0.106</tomcat.version>
+        <tomcat.version>9.0.109</tomcat.version>
         <h2.version>2.2.224</h2.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
