@@ -1,0 +1,74 @@
+# Product Requirements Document: Interview Scheduling
+
+## Overview
+
+Add automated interview scheduling to our job management application. Applicants can view recruiter availability and self-schedule interviews instead of coordinating via email.
+
+## Problem
+
+Recruiters and applicants exchange 8-12 emails per interview to find a mutually available time. This takes 3-5 days and creates poor candidate experience.
+
+## Solution
+
+Self-service scheduling where applicants view real-time calendar availability and book interviews instantly.
+
+## Users
+
+**Applicant**: Job seeker who needs to schedule interviews quickly
+**Recruiter**: Hiring manager who wants to reduce scheduling overhead
+
+## Key Features
+
+### 1. View Available Time Slots
+- Display recruiter's available times for next 30 days
+- Show times in applicant's local timezone
+- Filter by interview type (phone screen, technical, final)
+
+### 2. Book Interview
+- Select available time slot
+- Instant confirmation via email
+- Calendar invite sent to both parties
+- Booking synced to applicant tracking system
+
+### 3. Reschedule/Cancel
+- Reschedule up to 24 hours before interview
+- Cancel with optional reason
+- Automatic notifications sent
+
+### 4. Manage Availability
+- Recruiters set weekly availability hours
+- Block specific dates for time off
+- Set maximum interviews per day
+- Sync with Google Calendar or Outlook
+
+### 5. Notifications
+- Email confirmation with calendar invite
+- Reminders 24 hours and 1 hour before interview
+- Notifications for cancellations and reschedules
+
+## Interview Types
+
+- **Phone Screen**: 30 minutes
+- **Technical Interview**: 1 hour  
+- **Final Interview**: 2 hours
+
+## Requirements
+
+- Mobile responsive (70% mobile users)
+- Integrate with existing calendar systems (Google, Outlook)
+- Support 500+ applicants per month
+- 99.9% uptime during business hours
+
+## Success Metrics
+
+- Reduce time-to-interview from 5 days to 2 days
+- Eliminate 90% of scheduling emails
+- Achieve 4.5/5 candidate satisfaction score
+
+## Technical Context
+
+- Company: Mid-size (500-1000 employees)
+- Recruiters: 15
+- Monthly applicants: 500+
+- Existing stack: React, Node.js, PostgreSQL, AWS
+- ATS: Greenhouse
