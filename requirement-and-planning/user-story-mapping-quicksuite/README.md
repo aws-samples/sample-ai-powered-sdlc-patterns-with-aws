@@ -54,107 +54,64 @@ Requirements Document → Analysis → Journey Mapping & Gap Analysis → Story 
 
 ### Architecture Diagram
 
-```
-┌─────────────────────┐
-│  Requirements Doc   │
-│   (PDF/DOCX/TXT)    │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│  Quick Suite Flow   │
-│                     │
-│  ┌───────────────┐  │
-│  │ Step 1: Upload│  │
-│  └───────┬───────┘  │
-│          │          │
-│  ┌───────▼───────┐  │
-│  │ Step 2: Analyze│ │
-│  └───────┬───────┘  │
-│          │          │
-│  ┌───────▼───────┐  │
-│  │ Step 3: Map   │  │
-│  │  & Find Gaps  │  │
-│  └───────┬───────┘  │
-│          │          │
-│  ┌───────▼───────┐  │
-│  │ Step 4: Gen   │  │
-│  │  & Prioritize │  │
-│  └───────┬───────┘  │
-│          │          │
-│  ┌───────▼───────┐  │
-│  │ Step 5: Create│  │
-│  │   Document    │  │
-│  └───────────────┘  │
-└─────────────────────┘
-           │
-           ▼
-┌─────────────────────┐
-│  User Story Map     │
-│  - Journey Maps     │
-│  - Gap Analysis     │
-│  - Prioritized      │
-│    Stories (P0-P2)  │
-│  - Traceability     │
-└─────────────────────┘
-```
+![Solution Architecture](images/Requirements-Analysis.png)
 
 ## Prerequisites
 
 - **AWS Account** with Amazon Quick Suite access
 - **Amazon Quick Suite** subscription (per-user pricing)
-- **Knowledge Space**: "Product Management Best Practices" (created during setup)
-- **Permissions**: Ability to create and run Quick Suite Flows
+- **Permissions**: Ability to create spaces and flows in Quick Suite
 
 ## Deployment Instructions
 
-### Quick Start Guides
+The deployment consists of two one-time setup steps followed by running the flow:
 
-Before deploying, review these step-by-step guides:
-- **[Creating the Flow](CREATING-THE-FLOW.md)** - How to create the flow using AI generation
-- **[Running the Flow](RUNNING-THE-FLOW.md)** - How to execute the flow and interact with it
+### Step 1: Create the Quick Suite Space (One-time setup)
 
-### Step 1: Access Amazon Quick Suite
+Create a Quick Suite space to provide custom knowledge and context to the AI. A space is a centralized knowledge hub where you can upload company-specific information, templates, and guidelines that customize how the AI generates user stories.
 
-1. Navigate to Amazon Quick Suite in the AWS Console
-2. Ensure you have an active Quick Suite subscription
-3. Verify access to create flows
+**What you'll do**: Create a space named "Product Management Best Practices" and upload knowledge content (user story templates, agile guidelines, gap analysis frameworks, and prioritization methodologies).
 
-### Step 2: Create Knowledge Space
+**Detailed guide**: [Creating the Space](creating-the-space.md)
 
-1. In Quick Suite, navigate to **Knowledge Spaces**
-2. Click **Create Knowledge Space**
-3. Name: `Product Management Best Practices`
-4. Add optional content:
-   - User story templates
-   - Agile format guidelines
-   - Gap analysis frameworks
-   - Prioritization methodologies
+**Why this matters**: The space allows you to customize the AI's behavior and output format. Upload your organization's product details, brand guidelines, terminology, story format templates, UI mockups, design systems, or any reference materials. The AI will use this context to generate stories that match your standards and include relevant product details, making the output immediately usable without extensive editing.
 
-**Why Knowledge Spaces Matter**: The knowledge space allows you to customize the AI's behavior and output format. You can upload company-specific information (product details, brand guidelines, terminology), story format templates (your preferred Given-When-Then structure), UI mockups, design systems, or any reference materials. The AI will use this context to generate stories that match your organization's standards and include relevant product details. This makes the generated output immediately usable without extensive editing.
+### Step 2: Create the Flow (One-time setup)
 
-### Step 3: Create the Flow
+Create the User Story Mapping Generator flow using AI-powered generation from a text specification.
 
-1. In Quick Suite, navigate to **Flows**
-2. Click **Create Flow**
-3. Select **Generate from text** option
-4. Copy the entire contents of `quicksuite-flow-v4.0.md`
-5. Paste into the text box
-6. Click **Generate Flow**
-7. Quick Suite will use AI to construct the 5-step flow
-8. Review the generated flow and click **Save**
+**What you'll do**: Use Quick Suite's "Generate from text" feature to create a 5-step automated flow from the provided specification file (`quicksuite-flow-v4.0.md`).
 
-### Step 4: Configure Flow Settings
+**Detailed guide**: [Creating the Flow](creating-the-flow.md)
 
-1. Verify the flow name: `User Story Mapping Generator`
-2. Confirm knowledge space connection: `Product Management Best Practices`
-3. Test the flow with sample PRD (see `use-case-examples/` directory)
+### Step 3: Run the Flow
 
-### Step 5: Share with Team (Optional)
+Once the flow is set up, you can run it anytime to generate user story maps from requirements documents.
 
-1. Click **Share** in the flow settings
-2. Add team members who need access
-3. Set appropriate permissions (view/edit/run)
+**What you'll do**: Click "Run mode" in your flow, upload a requirements document (PDF, DOCX, TXT, or MD), and click "Start" to begin the automated analysis.
+
+![Run mode button](images/run-the-flow-0.png)
+
+![Upload document and start](images/run-the-flow-1.png)
+
+The flow will automatically:
+1. Analyze your requirements document
+2. Generate user journey maps
+3. Identify gaps in workflows and features
+4. Create prioritized user stories (P0/P1/P2)
+5. Produce a comprehensive user story mapping document
+
+**Detailed guide**: [Running the Flow](running-the-flow.md)
+
+### Step 4: Share with Team (Optional)
+
+Share the flow with your team members so they can run it independently.
+
+1. Open your flow in Quick Suite
+2. Click **Share and publish** button
+3. Add team members who need access
+4. Set appropriate permissions (view/edit/run)
+5. Team members can now access and run the flow from their Quick Suite dashboard
 
 ## Test
 
