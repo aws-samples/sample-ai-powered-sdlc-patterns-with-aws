@@ -16,7 +16,7 @@
     
     <properties>
         <java.version>17</java.version>
-        <tomcat.version>10.1.47</tomcat.version>
+        <tomcat.version>10.1.49</tomcat.version>
         <h2.version>2.2.224</h2.version>
         <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
