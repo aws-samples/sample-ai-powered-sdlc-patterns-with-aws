@@ -29,7 +29,7 @@
         <cucumber.version>7.20.1</cucumber.version>
         <maven.version>3.9.9</maven.version>
         <maven-shared-utils.version>3.4.2</maven-shared-utils.version>
-        <jackson.version>2.17.2</jackson.version>
+        <jackson.version>2.18.6</jackson.version>
         <junit.version>5.11.3</junit.version>
         <spring-boot.version>3.3.11</spring-boot.version>
     </properties>
