@@ -21,11 +21,11 @@
     "typescript": "~5.6.3"
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "^3.0.0",
-    "@aws-sdk/client-dynamodb": "^3.0.0",
-    "@aws-sdk/client-eventbridge": "^3.0.0",
-    "@aws-sdk/client-lambda": "^3.0.0",
-    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@aws-sdk/client-cloudwatch": "^3.1017.0",
+    "@aws-sdk/client-dynamodb": "^3.1017.0",
+    "@aws-sdk/client-eventbridge": "^3.1017.0",
+    "@aws-sdk/client-lambda": "^3.1017.0",
+    "@aws-sdk/lib-dynamodb": "^3.1017.0",
     "aws-cdk-lib": "^2.203.0",
     "aws-xray-sdk-core": "^3.5.3",
     "constructs": "^10.4.2",
