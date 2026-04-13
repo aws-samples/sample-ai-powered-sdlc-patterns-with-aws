@@ -53,7 +53,7 @@ cryptography>=43.0.0
 # Note: No database dependencies needed - using in-memory storage
 
 # Testing (for health checks)
-pytest==7.4.3
+pytest==9.0.3
 pytest-asyncio==0.21.1
 
 # Development tools
