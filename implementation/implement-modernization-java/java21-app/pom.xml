@@ -17,7 +17,7 @@
     <properties>
         <java.version>19</java.version>
         <!-- Security-focused dependency versions to address Grype Critical/High vulnerabilities -->
-        <tomcat.version>10.1.47</tomcat.version>
+        <tomcat.version>10.1.55</tomcat.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <spring-framework.version>6.1.21</spring-framework.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
