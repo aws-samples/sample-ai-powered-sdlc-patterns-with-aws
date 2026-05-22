@@ -4,7 +4,7 @@
 
 Local Brain is a CLI + MCP server pattern that gives your AI coding agents **persistent, queryable, semantically-searchable memory** across sessions — backed entirely by SQLite on your own machine. No vector database to provision, no service to deploy, no auth to wire up.
 
-When an agent (Amazon Q Developer CLI, Claude Code, Cursor, or any MCP-compatible client) writes a memory, Local Brain stores it in a per-namespace SQLite file with both an FTS5 full-text index and a `sqlite-vec` semantic index. Reads are direct SQL — milliseconds, offline-capable, no daemon. Embeddings default to a local `sentence-transformers` model (offline, free) but can optionally use **Amazon Bedrock Titan Embeddings v2** when you want managed inference.
+When an agent (Kiro CLI / Kiro IDE, Claude Code, Cursor, or any MCP-compatible client) writes a memory, Local Brain stores it in a per-namespace SQLite file with both an FTS5 full-text index and a `sqlite-vec` semantic index. Reads are direct SQL — milliseconds, offline-capable, no daemon. Embeddings default to a local `sentence-transformers` model (offline, free) but can optionally use **Amazon Bedrock Titan Embeddings v2** when you want managed inference.
 
 This repository is the public reference implementation extracted from a production internal deployment.
 
@@ -27,14 +27,14 @@ Most teams reach for a hosted vector DB (OpenSearch, Pinecone, Weaviate) or shov
 1. **Save** — your agent (or shell script, or cron job) writes a memory to a namespace via `local-brain memory save`. The CLI inserts a row into `~/.local-brain/<namespace>/memories.db` with FTS5 indexing applied immediately.
 2. **Embed** — periodically (or on-demand), `local-brain embeddings backfill` reads memories that don't yet have an embedding and writes vectors into a `sqlite-vec` virtual table. Default model is local `all-MiniLM-L6-v2` (384-dim, CPU). Set `LB_EMBEDDING_BACKEND=bedrock` to use **Amazon Titan Embeddings v2** instead.
 3. **Search** — `local-brain memory search` runs keyword (FTS5), semantic (sqlite-vec), or hybrid (RRF combination) queries. Returns ranked matches as JSON, ready for any agent to consume.
-4. **Recall** — your agent's MCP client (Q Dev CLI, Claude Code, Cursor) loads relevant memories at session start, or on-demand mid-conversation, via the bundled MCP server.
+4. **Recall** — your agent's MCP client (Kiro CLI / Kiro IDE, Claude Code, Cursor) loads relevant memories at session start, or on-demand mid-conversation, via the bundled MCP server.
 
 ### AWS-services architecture (Bedrock-optional path)
 
 ```mermaid
 graph TB
     subgraph "🤖 Agent Runtime"
-        QDev[Amazon Q Developer CLI]
+        Kiro[Kiro CLI / Kiro IDE]
         Claude[Claude Code]
         Cursor[Cursor / other MCP client]
     end
@@ -50,7 +50,7 @@ graph TB
         Bedrock[Amazon Bedrock<br/>Titan Embeddings v2 · optional]
     end
 
-    QDev -- MCP --> MCP
+    Kiro -- MCP --> MCP
     Claude -- MCP --> MCP
     Cursor -- MCP --> MCP
     MCP --> Store
@@ -112,7 +112,7 @@ Add to `~/.claude.json` under `mcpServers`:
 }
 ```
 
-For Q Developer CLI, add to `~/.aws/amazonq/mcp.json`:
+For Kiro CLI / Kiro IDE, add to `~/.kiro/settings/mcp.json`:
 ```json
 {
   "mcpServers": {
@@ -205,8 +205,8 @@ When switching backends, run `local-brain embeddings rebuild --namespace <ns>` �
 
 Example:
 ```bash
-export LB_AGENT_CLI=q          # Amazon Q Developer CLI
-export LB_AGENT_NAME=default   # or claude, q, etc.
+export LB_AGENT_CLI=kiro       # Kiro CLI (or claude-code, cursor, etc.)
+export LB_AGENT_NAME=default   # agent profile to invoke
 
 local-brain custom-automation create \
   --name "daily-brief" \
