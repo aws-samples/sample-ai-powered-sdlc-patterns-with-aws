@@ -7,6 +7,8 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,6 +17,27 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// allowedCLIBinaryName constrains which binary the MCP server is allowed to
+// shell out to. Only the companion CLI is permitted — no shell, no python,
+// no env, nothing else. The pattern matches `local-brain-pp-cli` (with an
+// optional platform suffix or `.exe` on Windows) and rejects anything else.
+var allowedCLIBinaryName = regexp.MustCompile(`^local-brain-pp-cli(\.exe)?$`)
+
+// validateCLIPath returns the input absolute path only if the basename
+// matches the strict companion-CLI allowlist. Returns empty string on
+// rejection. This is the security boundary between cliPath() resolution
+// and the actual exec.Command call: even if cliPath() were ever changed to
+// return an unexpected path, this validator stops it before exec.
+func validateCLIPath(p string) string {
+	if !filepath.IsAbs(p) {
+		return ""
+	}
+	if !allowedCLIBinaryName.MatchString(filepath.Base(p)) {
+		return ""
+	}
+	return p
+}
+
 func shellOutToCLI(cliPath func() (string, error), commandPath []string) server.ToolHandlerFunc {
 	lookupPath, lookupErr := cliPath()
 	prefixArgs := append([]string{}, commandPath...)
@@ -22,19 +45,21 @@ func shellOutToCLI(cliPath func() (string, error), commandPath []string) server.
 		if lookupErr != nil {
 			return mcplib.NewToolResultError(fmt.Sprintf("companion CLI binary not found: %v\nTried sibling lookup, LOCAL_BRAIN_CLI_PATH env var, and PATH.", lookupErr)), nil
 		}
+		// Re-validate the resolved binary path against the allowlist before exec.
+		// Defense-in-depth: cliPath() should already return a trusted lookup,
+		// but explicit re-validation here makes the data flow obviously safe
+		// for static analysis and review.
+		validated := validateCLIPath(lookupPath)
+		if validated == "" {
+			return mcplib.NewToolResultError(fmt.Sprintf("rejected: resolved CLI path %q failed allowlist validation", lookupPath)), nil
+		}
 		args := req.GetArguments()
 		finalArgs := append([]string{}, prefixArgs...)
 		finalArgs = append(finalArgs, cliArgsFromMCP(args)...)
 		if raw, _ := args["args"].(string); strings.TrimSpace(raw) != "" {
 			finalArgs = append(finalArgs, splitShellArgs(raw)...)
 		}
-		// nosemgrep: dangerous-exec-command
-		// Safe: `lookupPath` resolves to the local-brain-pp-cli binary itself (via
-		// the LOCAL_BRAIN_CLI_PATH env var or os/exec.LookPath of a fixed name).
-		// `finalArgs` are MCP-validated argument structs converted to flags by
-		// cliArgsFromMCP — not raw shell input. Args are passed as a separate
-		// argv slice (no shell interpolation).
-		cmd := exec.CommandContext(ctx, lookupPath, finalArgs...)
+		cmd := exec.CommandContext(ctx, validated, finalArgs...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			return mcplib.NewToolResultError(string(out)), nil

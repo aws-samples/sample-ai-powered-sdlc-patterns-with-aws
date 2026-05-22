@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -25,6 +26,29 @@ var pythonCandidates = []string{
 	"python3.12",
 	"python3.11",
 	"python3",
+}
+
+// allowedPythonBinPattern is the strict regex that any candidate must match
+// before we will exec it. This is the security boundary between the
+// hardcoded pythonCandidates list and the actual exec.Command call below —
+// it ensures even if someone mutates pythonCandidates at runtime (which is
+// not exposed via any public API) the binary path is constrained to:
+//   - absolute paths under common system Python install prefixes, OR
+//   - bare names like python3 / python3.11 / python3.12 (looked up via PATH)
+// Anything else is rejected before reaching exec.
+var allowedPythonBinPattern = regexp.MustCompile(
+	`^(/(usr|opt|Library/Frameworks/Python\.framework|Users/[^/]+/\.[^/]+/\.venv)/[a-zA-Z0-9_./-]+/python3(\.[0-9]+)?|python3(\.[0-9]+)?)$`,
+)
+
+// validatePythonBin returns the input only if it matches allowedPythonBinPattern.
+// Returns empty string on rejection so callers know to skip the candidate.
+// This is the explicit input-validator that semgrep + manual review can verify
+// constrains the exec target to a safe set, regardless of caller history.
+func validatePythonBin(bin string) string {
+	if !allowedPythonBinPattern.MatchString(bin) {
+		return ""
+	}
+	return bin
 }
 
 // PythonProbeResult describes one candidate's outcome.
@@ -98,11 +122,17 @@ print('OK')
 			r := PythonProbeResult{Bin: bin}
 			probeCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
-			// nosemgrep: dangerous-exec-command
-			// Safe: `bin` is iterated from the hardcoded `pythonCandidates` slice in this same file.
-			// `probeScript` is a const string literal. No user-controlled input reaches Command.
-			// Args are passed as a separate argv slice (no shell interpolation).
-			data, err := exec.CommandContext(probeCtx, bin, "-c", probeScript).CombinedOutput()
+			// Re-validate bin against the strict regex allowlist before exec.
+			// This is a defense-in-depth check: pythonCandidates is a static
+			// package-level slice never mutated, but explicit validation here
+			// makes the data flow obviously safe to readers and static analysis.
+			validated := validatePythonBin(bin)
+			if validated == "" {
+				r.Error = "rejected: bin path did not match allowedPythonBinPattern"
+				done <- indexed{i, r}
+				return
+			}
+			data, err := exec.CommandContext(probeCtx, validated, "-c", probeScript).CombinedOutput()
 			switch {
 			case err == nil:
 				r.SqliteLoadExtensionSupported = true
