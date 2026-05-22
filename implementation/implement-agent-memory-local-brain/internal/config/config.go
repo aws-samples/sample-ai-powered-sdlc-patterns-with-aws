@@ -86,6 +86,7 @@ func applyAuthFormat(format string, replacements map[string]string) string {
 
 func (c *Config) save() error {
 	dir := filepath.Dir(c.Path)
+	// nosemgrep: incorrect-default-permission — already 0o700 (semgrep can't tell)
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return fmt.Errorf("creating config dir: %w", err)
 	}

@@ -34,11 +34,11 @@ func newInitCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			brainDir := brain.BrainDir()
-			if err := os.MkdirAll(brainDir, 0o755); err != nil {
+			if err := os.MkdirAll(brainDir, 0o700); err != nil {
 				return err
 			}
 			binDir := filepath.Join(brainDir, "bin")
-			if err := os.MkdirAll(binDir, 0o755); err != nil {
+			if err := os.MkdirAll(binDir, 0o700); err != nil {
 				return err
 			}
 

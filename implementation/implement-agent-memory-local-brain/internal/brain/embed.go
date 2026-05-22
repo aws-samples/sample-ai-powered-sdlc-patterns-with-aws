@@ -98,6 +98,10 @@ print('OK')
 			r := PythonProbeResult{Bin: bin}
 			probeCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
+			// nosemgrep: dangerous-exec-command
+			// Safe: `bin` is iterated from the hardcoded `pythonCandidates` slice in this same file.
+			// `probeScript` is a const string literal. No user-controlled input reaches Command.
+			// Args are passed as a separate argv slice (no shell interpolation).
 			data, err := exec.CommandContext(probeCtx, bin, "-c", probeScript).CombinedOutput()
 			switch {
 			case err == nil:

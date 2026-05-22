@@ -85,7 +85,7 @@ func HasNamespace(namespace string) bool {
 // lock that prevents shadow-table races.
 func Open(ctx context.Context, namespace string) (*sql.DB, error) {
 	dir := NamespaceDir(namespace)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return nil, fmt.Errorf("creating namespace dir %s: %w", dir, err)
 	}
 	dbPath := DBPath(namespace)

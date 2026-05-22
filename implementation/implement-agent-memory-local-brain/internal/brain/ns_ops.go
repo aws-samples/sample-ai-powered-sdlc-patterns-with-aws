@@ -58,7 +58,7 @@ func Rename(ctx context.Context, from, to string) (int, error) {
 	if _, err := os.Stat(dst); err == nil {
 		return 0, fmt.Errorf("target %q already exists", to)
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o700); err != nil {
 		return 0, err
 	}
 	if err := os.Rename(src, dst); err != nil {
@@ -267,7 +267,7 @@ func Restore(ctx context.Context, archive, renameTo string, merge bool) (int, st
 	tr := tar.NewReader(gz)
 
 	root := BrainDir()
-	if err := os.MkdirAll(root, 0o755); err != nil {
+	if err := os.MkdirAll(root, 0o700); err != nil {
 		return 0, "", err
 	}
 
@@ -299,7 +299,7 @@ func Restore(ctx context.Context, archive, renameTo string, merge bool) (int, st
 				return restored, originalNS, fmt.Errorf("%s already exists; pass --merge to overwrite", target)
 			}
 		}
-		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(target), 0o700); err != nil {
 			return restored, originalNS, err
 		}
 		out, err := os.Create(target)

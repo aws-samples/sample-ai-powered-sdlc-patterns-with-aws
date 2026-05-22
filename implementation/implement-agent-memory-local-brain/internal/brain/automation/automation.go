@@ -378,7 +378,7 @@ func CreateCustom(opts CreateCustomOpts) (CustomAutomation, error) {
 	if _, err := os.Stat(dir); err == nil {
 		return CustomAutomation{}, fmt.Errorf("automation %q already exists", id)
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return CustomAutomation{}, err
 	}
 	c := CustomAutomation{
@@ -622,7 +622,7 @@ func parseScheduleSpec(spec string) map[string]any {
 
 // EnsureBin makes sure the brain bin directory exists. Used by `init`.
 func EnsureBin() error {
-	return os.MkdirAll(filepath.Join(brain.BrainDir(), "bin"), 0o755)
+	return os.MkdirAll(filepath.Join(brain.BrainDir(), "bin"), 0o700)
 }
 
 // WalkBinScripts walks an embed.FS rooted at "scripts/" and copies every file

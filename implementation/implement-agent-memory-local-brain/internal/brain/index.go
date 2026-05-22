@@ -108,7 +108,7 @@ func RebuildIndex(ctx context.Context) (IndexResult, error) {
 
 	out := []byte(b.String())
 	path := IndexPath()
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return IndexResult{}, err
 	}
 	if err := os.WriteFile(path, out, 0o644); err != nil {

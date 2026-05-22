@@ -28,6 +28,12 @@ func shellOutToCLI(cliPath func() (string, error), commandPath []string) server.
 		if raw, _ := args["args"].(string); strings.TrimSpace(raw) != "" {
 			finalArgs = append(finalArgs, splitShellArgs(raw)...)
 		}
+		// nosemgrep: dangerous-exec-command
+		// Safe: `lookupPath` resolves to the local-brain-pp-cli binary itself (via
+		// the LOCAL_BRAIN_CLI_PATH env var or os/exec.LookPath of a fixed name).
+		// `finalArgs` are MCP-validated argument structs converted to flags by
+		// cliArgsFromMCP — not raw shell input. Args are passed as a separate
+		// argv slice (no shell interpolation).
 		cmd := exec.CommandContext(ctx, lookupPath, finalArgs...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {

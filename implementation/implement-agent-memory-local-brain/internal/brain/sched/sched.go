@@ -232,7 +232,7 @@ func UninstallCustom(ctx context.Context, id string) error {
 
 func installLaunchd(ctx context.Context, label, script, scheduleSpec string) error {
 	dir := PlistDir()
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
 	plistPath := filepath.Join(dir, label+".plist")

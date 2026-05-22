@@ -36,6 +36,7 @@ func feedbackFilePath() (string, error) {
 		return "", fmt.Errorf("resolving home dir: %w", err)
 	}
 	dir := filepath.Join(home, ".local-brain-pp-cli")
+	// nosemgrep: incorrect-default-permission — already 0o700 (semgrep can't tell)
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return "", fmt.Errorf("creating state dir: %w", err)
 	}
