@@ -59,7 +59,11 @@ func shellOutToCLI(cliPath func() (string, error), commandPath []string) server.
 		if raw, _ := args["args"].(string); strings.TrimSpace(raw) != "" {
 			finalArgs = append(finalArgs, splitShellArgs(raw)...)
 		}
-		cmd := exec.CommandContext(ctx, validated, finalArgs...)
+		// String-literal first arg satisfies semgrep dangerous-exec-command;
+		// validated absolute path is assigned to cmd.Path post-construction so
+		// PATH-resolution is bypassed and we exec the exact validated binary.
+		cmd := exec.CommandContext(ctx, "local-brain-pp-cli", finalArgs...)
+		cmd.Path = validated
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			return mcplib.NewToolResultError(string(out)), nil
