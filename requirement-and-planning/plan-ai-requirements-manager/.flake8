@@ -1,0 +1,45 @@
+[flake8]
+# Maximum line length
+max-line-length = 120
+
+# Ignore specific errors:
+# E501 - line too long (handled by max-line-length)
+# W503 - line break before binary operator (conflicts with black)
+# E203 - whitespace before ':' (conflicts with black)
+# E266 - too many leading '#' for block comment
+# E402 - module level import not at top of file
+# F401 - imported but unused (in __init__.py files)
+ignore = E501
+
+# Exclude directories
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    .eggs,
+    *.egg,
+    build,
+    dist,
+    .pytest_cache,
+    htmlcov,
+    .tox,
+    .nox
+
+# Per-file ignores
+per-file-ignores =
+    __init__.py:F401
+    tests/*:F401,F811
+
+# Show source code for each error
+# show-source = True
+
+# Show the relevant text for each error
+# show-pep8 = True
+
+# Count the number of occurrences of each error/warning code
+# count = True
+
+# Print total number of errors
+# statistics = True

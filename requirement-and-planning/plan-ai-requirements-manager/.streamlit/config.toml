@@ -1,0 +1,11 @@
+[server]
+# Maximum file upload size in MB
+maxUploadSize = 10
+
+[theme]
+# Optional: Configure theme
+primaryColor = "#1f77b4"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"
