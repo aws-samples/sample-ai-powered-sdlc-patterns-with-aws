@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Local Brain is a CLI + MCP server pattern that gives your AI coding agents **persistent, queryable, semantically-searchable memory** across sessions — backed entirely by SQLite on your own machine. No vector database to provision, no service to deploy, no auth to wire up.
+Local Brain is a CLI + MCP server pattern that gives your AI coding agents **persistent, queryable, semantically-searchable memory** across sessions — backed entirely by SQLite on your own machine. No vector database to provision, no service to deploy, no additional authentication surface to manage. (See [Security Considerations](#security-considerations) for the on-disk storage posture.)
 
 When an agent ([Kiro](https://kiro.dev/), Claude Code, Cursor, or any MCP-compatible client) writes a memory, Local Brain stores it in a per-namespace SQLite file with both an FTS5 full-text index and a `sqlite-vec` semantic index. Reads are direct SQL — milliseconds, offline-capable, no daemon. Embeddings default to a local `sentence-transformers` model (offline, free) but can optionally use **Amazon Bedrock Titan Embeddings v2** when you want managed inference.
 
@@ -17,7 +17,7 @@ AI coding agents are stateless between sessions. Every time you open a new chat,
 - The user preferences it inferred ("don't add unsolicited tests", "use my company's style guide")
 - The cross-project insights it built up over weeks of work
 
-Most teams reach for a hosted vector DB (OpenSearch, Pinecone, Weaviate) or shove everything into a single context file. Both approaches break: hosted vector DBs add cost, latency, and an auth surface for what is fundamentally a *personal* knowledge store; flat context files don't scale past a few hundred entries and have no semantic recall.
+Most teams reach for a hosted vector DB (OpenSearch, Pinecone, Weaviate) or shove everything into a single context file. Both approaches break: hosted vector DBs add cost, latency, and an additional authentication surface to manage for what is fundamentally a *personal* knowledge store; flat context files don't scale past a few hundred entries and have no semantic recall.
 
 **Local Brain inverts the model.** Memory is per-user, on-disk, namespaced, queryable from any agent runtime, and the only thing that needs to be online is the embedding step (and even that is local by default).
 
@@ -224,6 +224,44 @@ local-brain custom-automation logs daily-brief --tail 200
 
 This is the killer pattern for AI-powered SDLC: **the agent runs while you sleep**, the memory grows while you sleep, and the next morning's session starts with yesterday's context already searchable.
 
+## Security Considerations
+
+Local Brain stores **plaintext memory content** on disk along with its FTS5 index and (when generated) sentence embeddings. The on-disk layout is per-user and not encrypted at rest beyond your operating system's filesystem permissions. Treat `~/.local-brain/` like any other user-private data directory.
+
+### On-disk data protection
+
+- **Filesystem permissions:** All directories Local Brain creates use `0o700` (owner-only access). Do not relax these.
+- **What's stored:** memory `content` (plaintext, exactly as written by your agent), tags, source labels, FTS5 index entries, and 384-dim embedding vectors. Each row also stores a content hash for dedup.
+- **What's NOT stored:** API keys, agent runtime credentials, or any secrets. Your agent runtime (Kiro, Claude Code, etc.) is responsible for not writing secrets into memory content. Sanitize agent outputs before saving if untrusted text could reach them.
+- **Backup posture:** If you back up `~/.local-brain/`, your backup target inherits this sensitivity. Use encrypted backups or exclude the directory.
+- **Multi-user systems:** Each OS user has their own `~/.local-brain/`. Never share the directory between users — semantic search across another user's memories is a privacy violation.
+
+### Bedrock backend (optional)
+
+When `LB_EMBEDDING_BACKEND=bedrock` is set, the embedding step calls `bedrock:InvokeModel` for the configured embedding model.
+
+- **Recommended IAM posture:** least-privilege. Scope your IAM policy to the **specific model ARN** rather than `bedrock:InvokeModel` on `*`:
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Allow",
+      "Action": "bedrock:InvokeModel",
+      "Resource": "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+    }]
+  }
+  ```
+- **Region scoping:** further constrain via the `Resource` ARN's region segment to the region you actually call.
+- **Memory content leaves your machine:** the Bedrock backend sends memory text to AWS for embedding inference. Local backend (`LB_EMBEDDING_BACKEND=local`, the default) keeps everything on-device.
+
+### Open-source dependencies
+
+- **`sentence-transformers/all-MiniLM-L6-v2`** — Apache-2.0 (model card: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- **`sqlite-vec`** — Apache-2.0 (https://github.com/asg017/sqlite-vec)
+- **`go-sqlite3`** — MIT (https://github.com/mattn/go-sqlite3)
+
+All Apache-2.0 / MIT — review your organization's approved-OSS list before redistributing.
+
 ## Architecture Files
 
 | Path | Purpose |
@@ -238,7 +276,7 @@ This is the killer pattern for AI-powered SDLC: **the agent runs while you sleep
 
 ## Disclaimer
 
-This is sample code. It is not warranted for production-grade workloads — review the architecture, test under your security model, and adapt to your environment. Embeddings cached on disk include the original text; protect `~/.local-brain/` accordingly. The Bedrock backend requires AWS credentials with `bedrock:InvokeModel` for the configured embedding model — see [AWS Pricing](https://aws.amazon.com/bedrock/pricing/) for cost details.
+This is sample code. It is not warranted for production-grade workloads — review the architecture, test under your security model, and adapt to your environment. See [Security Considerations](#security-considerations) for the on-disk storage posture and IAM guidance for the Bedrock backend. Bedrock pricing — see [AWS Pricing](https://aws.amazon.com/bedrock/pricing/).
 
 ## License
 
