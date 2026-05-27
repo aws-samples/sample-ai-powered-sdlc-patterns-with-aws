@@ -125,6 +125,21 @@ local-brain doctor
 
 If those three commands succeed, you have a working personal memory store. The MCP server below is purely additive — it lets agents reach the same store.
 
+### Agent discovery — `agent-context`
+
+The CLI exposes its full surface (commands, flags, examples, killer prompts, available profiles) as structured JSON via `local-brain agent-context --json`. Agents like Kiro and Claude Code can call this once at session start to discover everything Local Brain can do — no need to bake CLI knowledge into the agent's prompt or wait for the user to teach it.
+
+```bash
+local-brain agent-context --json | head -40
+# Schema version is included so agents can detect breaking changes
+local-brain agent-context --json | jq '.schema_version'
+```
+
+This is the recommended way for an agent to learn about Local Brain:
+- **Kiro**: include `local-brain agent-context --json` in your agent's startup hook or skill manifest. Kiro's CLI/IDE will incorporate the surface into its tool catalog.
+- **Claude Code**: invoke `local-brain agent-context --json` from a slash-command or have Claude run it on first use; the JSON answer goes straight into context.
+- **Any MCP-aware agent**: the bundled MCP server below also exposes the same metadata via the standard `tools/list` response, so MCP-native agents get discovery for free.
+
 ### (Optional) Wire up your agent via MCP
 
 Don't have an agent runtime yet? Install [Kiro](https://kiro.dev/):
@@ -198,6 +213,7 @@ local-brain embeddings backfill --all
 | `local-brain embeddings status` | Per-namespace coverage report |
 | `local-brain embeddings rebuild` | Drop and regenerate embeddings for a namespace |
 | `local-brain doctor` | Composite health check (binary, Python deps, sqlite-vec extension, embedder script) |
+| `local-brain agent-context` | Emit a structured JSON description of the CLI for agents (Kiro, Claude Code, etc.) — commands, flags, examples, available profiles, killer prompts |
 | `local-brain custom-automation` | Create / update / delete / run-now / logs for user-defined scheduled prompts |
 | `local-brain automation memory` | Enable / disable / status of the 9 bundled memory automations (compiler, indexer, linter, etc.) |
 
