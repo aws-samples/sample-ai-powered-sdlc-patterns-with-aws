@@ -210,20 +210,24 @@ local-brain memory save \
   --type insight \
   --content "API gateway uses Cognito JWT in Authorization header, NOT Bearer"
 
-# 2. Search keyword
+# 2. Keyword search (FTS5 over the namespace)
 local-brain memory search "Cognito JWT" --namespace project/my-app
 
-# 3. Generate embeddings (default = local sentence-transformers)
+# 3. List recent memories in a namespace
+local-brain memory list --namespace project/my-app --limit 10
+
+# 4. Generate embeddings — populates the sqlite-vec virtual table
+#    Default backend = local sentence-transformers (offline, free)
 local-brain embeddings backfill --all
+local-brain embeddings status
 
-# 4. Semantic search
-local-brain memory search "how do we authenticate" --namespace project/my-app --mode semantic
-
-# 5. Use Bedrock instead of local model (optional)
+# 5. (Optional) Use Bedrock for higher-quality embeddings
 export LB_EMBEDDING_BACKEND=bedrock
 export AWS_REGION=us-east-1
 local-brain embeddings backfill --all
 ```
+
+> **What works today vs. on the roadmap.** The CLI's `memory search` runs FTS5 keyword search and is fully functional. `embeddings backfill` writes vectors into `memories_vec` and is also fully functional — you can confirm coverage with `embeddings status`. **Native semantic and hybrid modes** (where the CLI ranks results by vector distance) are a v1.1 follow-up; today they fall back to keyword. The vector table is populated now so v1.1 doesn't require a re-embed.
 
 ## Command Reference
 
