@@ -2,9 +2,9 @@
 
 ## Introduction
 
-Local Brain is a CLI + MCP server pattern that gives your AI coding agents **persistent, queryable, semantically-searchable memory** across sessions — backed entirely by SQLite on your own machine. No vector database to provision, no service to deploy, no additional authentication surface to manage. (See [Security Considerations](#security-considerations) for the on-disk storage posture.)
+Local Brain is a **CLI** that gives you and your AI coding agents **persistent, queryable, semantically-searchable memory** across sessions — backed entirely by SQLite on your own machine. No vector database to provision, no service to deploy, no additional authentication surface to manage. (See [Security Considerations](#security-considerations) for the on-disk storage posture.)
 
-When an agent ([Kiro](https://kiro.dev/), Claude Code, Cursor, or any MCP-compatible client) writes a memory, Local Brain stores it in a per-namespace SQLite file with both an FTS5 full-text index and a `sqlite-vec` semantic index. Reads are direct SQL — milliseconds, offline-capable, no daemon. Embeddings default to a local `sentence-transformers` model (offline, free) but can optionally use **Amazon Bedrock Titan Embeddings v2** when you want managed inference.
+The `local-brain` CLI is the primary interface. You use it directly from your shell, from scripts, and from cron jobs to save, search, and curate memory. A bundled MCP server (`local-brain-mcp`) exposes the same operations to MCP-compatible agent runtimes ([Kiro](https://kiro.dev/), Claude Code, Cursor) so they can read and write that same memory store — but the CLI is what holds the data, runs the embeddings, and drives the automations. Reads are direct SQL — milliseconds, offline-capable, no daemon. Embeddings default to a local `sentence-transformers` model (offline, free) but can optionally use **Amazon Bedrock Titan Embeddings v2** when you want managed inference.
 
 This repository is the public reference implementation extracted from a production internal deployment.
 
@@ -24,24 +24,32 @@ Most teams reach for a hosted vector DB (OpenSearch, Pinecone, Weaviate) or shov
 ## Solution Architecture
 
 ### How it works
-1. **Save** — your agent (or shell script, or cron job) writes a memory to a namespace via `local-brain memory save`. The CLI inserts a row into `~/.local-brain/<namespace>/memories.db` with FTS5 indexing applied immediately.
+
+Everything routes through the **`local-brain` CLI**. You drive it directly from your shell or scripts; an agent reaches the same operations through the bundled MCP server, which is just a thin adapter over the CLI's surface.
+
+1. **Save** — `local-brain memory save` writes a memory to a namespace. The CLI inserts a row into `~/.local-brain/<namespace>/memories.db` with FTS5 indexing applied immediately. Callers: you (interactively), shell scripts, cron jobs, or an agent via MCP.
 2. **Embed** — periodically (or on-demand), `local-brain embeddings backfill` reads memories that don't yet have an embedding and writes vectors into a `sqlite-vec` virtual table. Default model is local `all-MiniLM-L6-v2` (384-dim, CPU). Set `LB_EMBEDDING_BACKEND=bedrock` to use **Amazon Titan Embeddings v2** instead.
-3. **Search** — `local-brain memory search` runs keyword (FTS5), semantic (sqlite-vec), or hybrid (RRF combination) queries. Returns ranked matches as JSON, ready for any agent to consume.
-4. **Recall** — your agent's MCP client ([Kiro](https://kiro.dev/), Claude Code, Cursor) loads relevant memories at session start, or on-demand mid-conversation, via the bundled MCP server.
+3. **Search** — `local-brain memory search` runs keyword (FTS5), semantic (sqlite-vec), or hybrid (RRF combination) queries. Returns ranked matches as JSON. Use it from your terminal to inspect what your agent has learned, from shell pipelines, or from agents via MCP.
+4. **Recall** — your agent loads relevant memories at session start, or on-demand mid-conversation, via the bundled MCP server — which fans out to the same CLI primitives above.
 
 ### AWS-services architecture (Bedrock-optional path)
 
 ```mermaid
 graph TB
-    subgraph "🤖 Agent Runtime"
+    subgraph "👤 You — primary user"
+        Shell[Terminal / shell scripts]
+        Cron[Cron jobs &amp; custom-automations]
+    end
+
+    subgraph "🤖 Agent Runtime — secondary, via MCP"
         Kiro[Kiro · IDE / CLI / Web]
         Claude[Claude Code]
         Cursor[Cursor / other MCP client]
     end
 
     subgraph "🧠 Local Brain"
-        CLI[local-brain CLI]
-        MCP[local-brain MCP server]
+        CLI[local-brain CLI<br/>primary interface]
+        MCP[local-brain-mcp<br/>MCP adapter over the CLI]
         Store[(SQLite per-namespace<br/>FTS5 + sqlite-vec)]
     end
 
@@ -50,14 +58,17 @@ graph TB
         Bedrock[Amazon Bedrock<br/>Titan Embeddings v2 · optional]
     end
 
+    Shell --> CLI
+    Cron --> CLI
     Kiro -- MCP --> MCP
     Claude -- MCP --> MCP
     Cursor -- MCP --> MCP
-    MCP --> Store
+    MCP --> CLI
     CLI --> Store
     CLI -.embedding step.-> Local
     CLI -.LB_EMBEDDING_BACKEND=bedrock.-> Bedrock
 
+    style CLI fill:#e8f5e9
     style Bedrock fill:#fff3e0
     style Store fill:#e1f5fe
     style MCP fill:#f3e5f5
@@ -98,7 +109,23 @@ local-brain init
 # Creates ~/.local-brain/, vendored embedder script, default config
 ```
 
-### Wire up your agent
+### Verify the CLI works (no agent required)
+
+The CLI is fully usable on its own — try it before wiring any agent:
+
+```bash
+local-brain memory save \
+  --namespace test \
+  --type insight \
+  --content "Local Brain installed and working"
+
+local-brain memory search "installed" --namespace test
+local-brain doctor
+```
+
+If those three commands succeed, you have a working personal memory store. The MCP server below is purely additive — it lets agents reach the same store.
+
+### (Optional) Wire up your agent via MCP
 
 Don't have an agent runtime yet? Install [Kiro](https://kiro.dev/):
 ```bash
