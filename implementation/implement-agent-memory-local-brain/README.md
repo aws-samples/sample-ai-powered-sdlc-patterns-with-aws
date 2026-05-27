@@ -91,6 +91,38 @@ graph TB
 - Python 3.11+ (for local embedding step) with `pip install sqlite-vec sentence-transformers`
 - (Optional) AWS credentials with `bedrock:InvokeModel` permission for Titan Embeddings v2 if using the Bedrock backend
 
+> **Note on Python.** `pip install sentence-transformers` pulls PyTorch and its CUDA wheels (~1 GB on first install; allow 5-10 minutes on a typical broadband link). If you're on macOS Python.org builds, your `python3` may be compiled with `--disable-loadable-sqlite-extensions`, which silently breaks `sqlite-vec`. Homebrew Python (`brew install python@3.12`) and Linux distro Pythons work fine; if your distro doesn't ship 3.11+, [python-build-standalone](https://github.com/astral-sh/python-build-standalone) provides pre-built tarballs that need zero system deps.
+
+#### Quick install on a clean machine (no sudo)
+
+If you're on a fresh Linux box (DevSpace, container, EC2) without Go or Python 3.11+:
+
+```bash
+# Go 1.26.3 — installs to ~/go, no sudo
+cd ~ && curl -fsSL https://go.dev/dl/go1.26.3.linux-amd64.tar.gz | tar -xz
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.zshrc
+export PATH="$HOME/go/bin:$PATH"
+
+# Python 3.11 via python-build-standalone — installs to ~/python311, no sudo,
+# ships with sqlite3/bz2/lzma extensions intact (unlike pyenv-from-source on
+# hardened machines without libssl/libffi/libsqlite3 headers)
+mkdir -p ~/python311 && cd ~/python311
+curl -fsSL -o py.tar.gz "https://github.com/astral-sh/python-build-standalone/releases/latest/download/cpython-3.11.15+20260510-x86_64-unknown-linux-gnu-install_only.tar.gz"
+tar -xzf py.tar.gz && rm py.tar.gz
+echo 'export PATH="$HOME/python311/python/bin:$PATH"' >> ~/.zshrc
+export PATH="$HOME/python311/python/bin:$PATH"
+
+# Local Brain Python deps
+python3 -m pip install --user sqlite-vec sentence-transformers
+```
+
+On macOS with Homebrew, the equivalent is:
+
+```bash
+brew install go@1.26 python@3.12
+python3 -m pip install --user sqlite-vec sentence-transformers
+```
+
 ### Build from source
 
 ```bash

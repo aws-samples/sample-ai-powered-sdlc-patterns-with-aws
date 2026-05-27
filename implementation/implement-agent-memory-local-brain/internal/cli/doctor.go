@@ -6,62 +6,16 @@ package cli
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 	"time"
 
-	"local-brain-pp-cli/internal/client"
 	"local-brain-pp-cli/internal/config"
 	"local-brain-pp-cli/internal/store"
 	"github.com/spf13/cobra"
 )
-
-// looksLikeDoctorInterstitial reports whether the response body matches a known
-// bot-detection challenge page (Cloudflare, Akamai, Vercel, AWS WAF, DataDome,
-// PerimeterX). Only fires on the doctor probe — used to distinguish "transport
-// reached the wall" from "transport failed entirely." Returns the vendor name
-// when matched, or empty string when no match.
-//
-// Markers are anchored to <title> or vendor-specific strings to avoid
-// false-positives on benign content. For example, a recipe titled "Just A
-// Moment of Pause Cookies" must NOT match the Cloudflare challenge marker;
-// only "<title>just a moment" (the actual interstitial title) does.
-func looksLikeDoctorInterstitial(body []byte) string {
-	if len(body) == 0 {
-		return ""
-	}
-	limit := len(body)
-	if limit > 8192 {
-		limit = 8192
-	}
-	prefix := strings.ToLower(string(body[:limit]))
-	if !strings.Contains(prefix, "<title") {
-		// Every bot interstitial we recognize sets a <title>; bodies without
-		// one are body-only API responses, not challenge pages.
-		return ""
-	}
-	switch {
-	case strings.Contains(prefix, "<title>just a moment") || // CF JS challenge
-		strings.Contains(prefix, "challenges.cloudflare.com") || // CF Turnstile
-		(strings.Contains(prefix, "attention required") && strings.Contains(prefix, "cloudflare")):
-		return "Cloudflare"
-	case strings.Contains(prefix, "akamai") && (strings.Contains(prefix, "request unsuccessful") || strings.Contains(prefix, "access denied")):
-		return "Akamai"
-	case strings.Contains(prefix, "x-vercel-mitigated") || strings.Contains(prefix, "x-vercel-challenge-token") ||
-		(strings.Contains(prefix, "vercel") && strings.Contains(prefix, "challenge")):
-		return "Vercel"
-	case strings.Contains(prefix, "request blocked") && strings.Contains(prefix, "aws waf"):
-		return "AWS WAF"
-	case strings.Contains(prefix, "datadome") && (strings.Contains(prefix, "blocked") || strings.Contains(prefix, "captcha") || strings.Contains(prefix, "challenge")):
-		return "DataDome"
-	case strings.Contains(prefix, "perimeterx") || strings.Contains(prefix, "px-captcha"):
-		return "PerimeterX"
-	}
-	return ""
-}
 
 func newDoctorCmd(flags *rootFlags) *cobra.Command {
 	var failOn string
@@ -87,73 +41,16 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 			} else {
 				report["config"] = "ok"
 				report["config_path"] = cfg.Path
-				report["base_url"] = cfg.BaseURL
 			}
 
-			// Check auth
+			// Auth: Local Brain is a local-only CLI — there is no remote
+			// service to authenticate against. The store lives entirely
+			// on disk under ~/.local-brain/, protected by file-system
+			// permissions (0o700). Embedding via Bedrock is the only
+			// optional remote path; that uses standard AWS credential
+			// resolution (env / shared credentials / instance profile).
 			report["auth"] = "not required"
 
-			// Check auth environment variables
-
-			// Check API connectivity and validate credentials.
-			//
-			// The doctor uses the same client every other command uses --
-			// flags.newClient() returns a *client.Client wrapping whatever
-			// transport the spec declared (Surf for browser-chrome, stdlib
-			// for standard). A separate stdlib http.Client would silently
-			// bypass that choice and report false negatives against
-			// Cloudflare-fronted, Akamai-fronted, or otherwise bot-detected
-			// sites. By going through flags.newClient(), the doctor's
-			// reachability verdict matches what real commands experience.
-			if cfg != nil && cfg.BaseURL != "" {
-				c, clientErr := flags.newClient()
-				if clientErr != nil {
-					report["api"] = fmt.Sprintf("client init error: %s", clientErr)
-				} else {
-					// Step 1: Basic reachability via the configured transport.
-					reachBody, reachErr := c.Get("/", nil)
-					var reachAPIErr *client.APIError
-					switch {
-					case reachErr == nil:
-						// 2xx response — clearly reachable. Still inspect the
-						// body for a known interstitial; some bot walls return
-						// 200 with a JS challenge page.
-						if vendor := looksLikeDoctorInterstitial(reachBody); vendor != "" {
-							report["api"] = fmt.Sprintf("blocked by %s interstitial — the configured transport reached the wall. Try a different network, wait for the IP-level rate limit to clear, or check that the browser-chrome transport is bound correctly.", vendor)
-						} else {
-							report["api"] = "reachable"
-						}
-					case errors.As(reachErr, &reachAPIErr):
-						// Non-2xx from the server. The network reached, the
-						// server responded — that's "reachable" for our
-						// purposes. Inspect the response body for a known
-						// interstitial first; otherwise note the status.
-						status := reachAPIErr.StatusCode
-						if vendor := looksLikeDoctorInterstitial([]byte(reachAPIErr.Body)); vendor != "" {
-							report["api"] = fmt.Sprintf("blocked by %s interstitial (HTTP %d) — the configured transport reached the wall.", vendor, status)
-						} else {
-							report["api"] = fmt.Sprintf("reachable (HTTP %d at /)", status)
-						}
-					default:
-						// Network-level failure: DNS, connection refused, TLS,
-						// transport init, etc. The transport itself didn't
-						// connect.
-						report["api"] = fmt.Sprintf("unreachable: %s", reachErr)
-					}
-
-					// Step 2: Validate credentials with an authenticated probe.
-					authHeader := cfg.AuthHeader()
-					if authHeader == "" {
-						// No auth configured — skip credential validation
-					} else if reachErr != nil && !errors.As(reachErr, &reachAPIErr) {
-						report["credentials"] = "skipped (API unreachable)"
-					} else {
-						report["credentials"] = "present (not verified — set auth.verify_path in spec for an API acceptance check)"
-					}
-				}
-			} else if cfg != nil && cfg.BaseURL == "" {
-				report["api"] = "not configured (set base_url in config file)"
-			}
 			// Cache health: only reported when this CLI has a local store.
 			// Surfaces rows + last_synced_at per resource, schema version,
 			// and a fresh/stale/unknown verdict so agents can introspect
@@ -174,9 +71,6 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 			checkKeys := []struct{ key, label string }{
 				{"config", "Config"},
 				{"auth", "Auth"},
-				{"env_vars", "Env Vars"},
-				{"api", "API"},
-				{"credentials", "Credentials"},
 			}
 			for _, ck := range checkKeys {
 				v, ok := report[ck.key]
@@ -204,7 +98,7 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 				fmt.Fprintf(w, "  %s %s: %s\n", indicator, ck.label, s)
 			}
 			// Print info keys without status indicator
-			for _, key := range []string{"config_path", "base_url", "auth_source", "version"} {
+			for _, key := range []string{"config_path", "version"} {
 				if v, ok := report[key]; ok {
 					fmt.Fprintf(w, "  %s: %v\n", key, v)
 				}
