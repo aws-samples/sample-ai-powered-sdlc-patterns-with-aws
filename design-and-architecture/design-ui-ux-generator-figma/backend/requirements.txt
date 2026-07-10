@@ -6,7 +6,7 @@ flask>=3.0.0
 flask-cors>=4.0.0
 
 # Testing dependencies
-pytest==7.4.0
+pytest==9.0.3
 pytest-cov==4.1.0
 pytest-mock==3.11.1
 pytest-flask==1.2.0
