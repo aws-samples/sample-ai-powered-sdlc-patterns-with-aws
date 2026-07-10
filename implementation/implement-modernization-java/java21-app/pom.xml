@@ -23,7 +23,7 @@
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <commons-io.version>2.16.1</commons-io.version>
         <commons-compress.version>1.27.1</commons-compress.version>
-        <bcprov.version>1.79</bcprov.version>
+        <bcprov.version>1.84</bcprov.version>
         <logback.version>1.5.13</logback.version>
         <h2.version>2.3.232</h2.version>
         <cucumber.version>7.20.1</cucumber.version>
