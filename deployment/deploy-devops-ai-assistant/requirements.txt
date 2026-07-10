@@ -1,6 +1,6 @@
 boto3==1.34.162
 botocore==1.34.162
-GitPython==3.1.43
+GitPython==3.1.50
 streamlit==1.37.1
 langchain==0.3.30
 langchain-aws==0.1.17
