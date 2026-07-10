@@ -1,6 +1,6 @@
 # Minimal dependencies for Jenkins MCP Server
 python-jenkins==1.8.2
-requests==2.32.4
+requests==2.33.0
 python-dotenv==1.2.2
 mcp
 boto3
