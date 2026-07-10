@@ -8,7 +8,7 @@ langchain-community==0.3.27
 langchain-core==0.3.81
 langchain-text-splitters==0.2.4
 langchainhub==0.1.21
-langsmith==0.1.129
+langsmith==0.8.0
 pandas==2.2.2
 numpy==1.26.4
 pydantic==2.8.2
