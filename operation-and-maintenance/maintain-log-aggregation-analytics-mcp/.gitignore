@@ -1,0 +1,14 @@
+node_modules/
+.venv/
+*.js
+!jest.config.js
+*.d.ts
+*.pyc
+__pycache__/
+cdk.out/
+.cdk.staging/
+*.egg-info/
+dist/
+.env
+.kiro
+.threatmodel
