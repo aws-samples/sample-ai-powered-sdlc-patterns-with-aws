@@ -48,7 +48,7 @@ pypd>=1.1.0
 structlog>=23.2.0
 
 # Security (minimal - no authentication needed for Slack integration)
-cryptography>=49.0.0
+cryptography>=50.0.0
 
 # Note: No database dependencies needed - using in-memory storage
 

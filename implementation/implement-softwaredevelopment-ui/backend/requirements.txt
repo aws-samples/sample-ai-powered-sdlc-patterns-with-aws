@@ -29,7 +29,7 @@ requests>=2.34.2
 
 # JWT and authentication
 PyJWT>=2.13.0
-cryptography>=49.0.0
+cryptography>=50.0.0
 
 # PDF generation
 reportlab>=4.0.0
