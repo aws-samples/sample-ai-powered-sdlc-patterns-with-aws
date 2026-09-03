@@ -16,7 +16,7 @@
     
     <properties>
         <java.version>1.8</java.version>
-        <tomcat.version>9.0.118</tomcat.version>
+        <tomcat.version>9.0.121</tomcat.version>
         <h2.version>2.2.224</h2.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
@@ -24,7 +24,7 @@
         <commons-compress.version>1.27.1</commons-compress.version>
         <logback.version>1.5.35</logback.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <spring.version>5.3.39</spring.version>
+        <spring.version>6.2.19</spring.version>
     </properties>
     
     <dependencies>
